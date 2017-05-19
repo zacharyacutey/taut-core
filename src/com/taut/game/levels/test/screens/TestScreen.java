@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.taut.game.Taut;
@@ -18,7 +19,7 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 	Taut game;
 	OrthographicCamera camera;
 	TiledMap map;
-	IsometricTiledMapRenderer renderer;
+	OrthogonalTiledMapRenderer renderer;
 	
 	private static class Inputs
 	{
@@ -42,12 +43,14 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		this.game = game;
-		this.map = TestData.getMainMap();
-		this.camera = new OrthographicCamera();
-		camera.setToOrtho(false, width, height);
-		camera.position.set(width / 2f, height / 2f, 0);
+		map = TestData.getMainMap();
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, width, height);		
+		camera.zoom = .04f;
+		camera.position.set((width / 2f) * camera.zoom, (height / 2f) * camera.zoom, 0f);
 		camera.update();
-		this.renderer = new IsometricTiledMapRenderer(map);
+		renderer = new OrthogonalTiledMapRenderer(map, 1f/16f);
+		
 		Gdx.input.setInputProcessor(this);
 	}
 	
@@ -59,8 +62,12 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
+		
+		System.out.println("x: " + renderer.getViewBounds().getX());
+		System.out.println("y: " + renderer.getViewBounds().getY());
 		renderer.setView(camera);
 		renderer.render();
+		
 	}
 	
 	private void handleInput(float delta)

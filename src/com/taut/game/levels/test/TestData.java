@@ -12,7 +12,7 @@ public class TestData {
 	{
 		if(mainMap == null)
 		{
-			mainMap = new TmxMapLoader().load("isotest.tmx");
+			mainMap = new TmxMapLoader().load("outdoor.tmx");
 		}
 		return mainMap;
 	}
