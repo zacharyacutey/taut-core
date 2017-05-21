@@ -3,6 +3,8 @@ package com.taut.game.levels.test;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
+// Where the data for the test level goes.
+
 public class TestData {
 	private TestData(){}
 	
