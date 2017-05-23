@@ -214,19 +214,19 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 	@Override
 	public boolean keyUp(int keycode) {
 		
-		if(keycode == Input.Keys.LEFT)
+		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
 		{
 			Inputs.left.isPressed = false;
 			Inputs.left.timeSincePressed = 0.0;
-		}else if(keycode == Input.Keys.RIGHT)
+		}else if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D)
 		{
 			Inputs.right.isPressed = false;
 			Inputs.right.timeSincePressed = 0.0;
-		}else if(keycode == Input.Keys.UP)
+		}else if(keycode == Input.Keys.UP || keycode == Input.Keys.W)
 		{
 			Inputs.up.isPressed = false;
 			Inputs.up.timeSincePressed = 0.0;
-		}else if(keycode == Input.Keys.DOWN)
+		}else if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S)
 		{
 			Inputs.down.isPressed = false;
 			Inputs.down.timeSincePressed = 0.0;
@@ -238,16 +238,16 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 	@Override
 	public boolean keyDown(int keycode) {
 		
-		if(keycode == Input.Keys.LEFT)
+		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
 		{
 			Inputs.left.isPressed = true;
-		}else if(keycode == Input.Keys.RIGHT)
+		}else if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D)
 		{
 			Inputs.right.isPressed = true;
-		}else if(keycode == Input.Keys.UP)
+		}else if(keycode == Input.Keys.UP || keycode == Input.Keys.W)
 		{
 			Inputs.up.isPressed = true;
-		}else if(keycode == Input.Keys.DOWN)
+		}else if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S)
 		{
 			Inputs.down.isPressed = true;
 		}
