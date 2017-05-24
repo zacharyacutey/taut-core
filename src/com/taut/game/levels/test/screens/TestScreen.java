@@ -36,6 +36,9 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 	float walkAnimationTime;
 	Direction direction;
 	
+	/** 
+	 * used for sprite direction
+	 */
 	enum Direction {FORWARD,BACKWARD}
 	
 	private static class Inputs
@@ -80,21 +83,20 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
         
         
 		handleInput(delta);
+		
+		Sprite currentSprite = new Sprite(walkAnimation.getKeyFrame(walkAnimationTime, true));
 
-		Vector3 cameraPosition = getCameraPosition(playerPosition);
+		Vector3 cameraPosition = getCameraPosition(playerPosition, currentSprite); // applies bounds to the player position before moving camera
 		camera.position.set(cameraPosition);
-		
-		
 		camera.update();
+		
 		Vector3 projectedPlayerPosition = 
 				camera.project(new Vector3(playerPosition)); // convert from world units to camera units
-		Sprite currentSprite= new Sprite(walkAnimation.getKeyFrame(walkAnimationTime, true));
 		currentSprite.setScale((1f / currentSprite.getWidth())/camera.zoom, 
 				((1f / currentSprite.getHeight())/camera.zoom) * (currentSprite.getHeight()/currentSprite.getWidth()));
 		currentSprite.setX(projectedPlayerPosition.x);
 		currentSprite.setY(projectedPlayerPosition.y);
-		if(direction == Direction.BACKWARD)
-			currentSprite.flip(true, false);
+		if(direction == Direction.BACKWARD) currentSprite.flip(true, false);
 		renderer.setView(camera);
 		renderer.render();
 		
@@ -103,19 +105,21 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		batch.end();
 	}
 	
-	public Vector3 getCameraPosition(Vector3 playerPosition)
+	public Vector3 getCameraPosition(Vector3 playerPosition, Sprite playerSprite)
 	{
-		float camX = playerPosition.x; // set camera coords to center of sprite
-		float camY = playerPosition.y; 
+		// set camera coords to center of sprite and account for the fact that sprites are drawn from bottom left and are scaled
+		float camX = playerPosition.x + (playerSprite.getWidth() * camera.zoom / 2f); 
+		float camY = playerPosition.y + (playerSprite.getHeight() * camera.zoom / 2f); 
 		// TODO: make these actually the center of the sprite
 		
 		float halfHeight = (Gdx.graphics.getHeight() / 2f) * camera.zoom;
 		float halfWidth = (Gdx.graphics.getWidth() / 2f) * camera.zoom;
 		
-		camX = Math.max(camX, halfWidth);
-		camX = Math.min(camX, map.getProperties().get("width",Integer.class) - halfWidth);
-		camY = Math.max(camY, halfHeight);
-		camY = Math.min(camY, map.getProperties().get("height",Integer.class) - halfHeight);
+		// add left/right/up/down bounds to camera motion 
+		camX = Math.max(camX, halfWidth); // left
+		camX = Math.min(camX, map.getProperties().get("width",Integer.class) - halfWidth); // right
+		camY = Math.max(camY, halfHeight); // up
+		camY = Math.min(camY, map.getProperties().get("height",Integer.class) - halfHeight); // down
 		
 		
 		return new Vector3(camX, camY, 0f);
@@ -128,7 +132,7 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		boolean addedDeltaToWalk = false;
 		if(Inputs.left.isPressed)
 		{
-			direction = Direction.BACKWARD;
+			direction = Direction.BACKWARD; 
 			translation.x -= movementMagnitude(Inputs.left.timeSincePressed);
 			Inputs.left.timeSincePressed += delta;
 			if(addedDeltaToWalk == false)
@@ -171,7 +175,7 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		
 		if(Inputs.left.isPressed && Inputs.right.isPressed)
 		{
-			direction = Direction.FORWARD;
+			direction = Direction.FORWARD; 
 			translation.x = 0.0f;
 			Inputs.left.timeSincePressed = 0.0;
 			Inputs.right.timeSincePressed = 0.0;
