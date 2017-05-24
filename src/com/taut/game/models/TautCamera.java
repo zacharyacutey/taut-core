@@ -19,18 +19,6 @@ public class TautCamera extends OrthographicCamera {
 		update();
 	}
 	
-	public float getViewWidth()
-	{
-		float width = Gdx.graphics.getWidth();
-		return width * zoom;
-	}
-	
-	public float getViewHeight()
-	{
-		float height = Gdx.graphics.getHeight();
-		return height * zoom;
-	}
-	
 	public void setCameraPositionFromPlayer(Vector3 playerPosition, int mapWidth, int mapHeight)
 	{
 		position.set(getCameraPositionFromPlayer(playerPosition, mapWidth, mapHeight));
@@ -39,8 +27,9 @@ public class TautCamera extends OrthographicCamera {
 	private Vector3 getCameraPositionFromPlayer(Vector3 playerPosition, int mapWidth, int mapHeight)
 	{
 		
-		float camX = playerPosition.x + convertPixelLengthToWorld(getViewWidth())/2; // this follows w/ sprite at bottom left
-		float camY = playerPosition.y + convertPixelLengthToWorld(getViewHeight())/2; 
+		float camX = playerPosition.x + convertPixelLengthToWorld(viewportWidth)/2f; // this follows w/ sprite at bottom left
+		float camY = playerPosition.y + convertPixelLengthToWorld(viewportHeight)/2f; 
+		//System.out.println("test " + convertPixelLengthToWorld(viewportWidth)/2f);
 		/*float halfViewHeight = getViewHeight()/ 2f;
 		float halfViewWidth = getViewWidth() /2f;
 		
