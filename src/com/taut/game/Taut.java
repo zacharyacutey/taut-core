@@ -14,6 +14,7 @@ public class Taut extends Game {
 		this.setScreen(new TestScreen(this));
 	}
 
+	
 	@Override
 	public void render () {
 		super.render();

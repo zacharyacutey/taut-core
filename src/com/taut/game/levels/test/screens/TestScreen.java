@@ -5,29 +5,23 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.taut.game.Taut;
 import com.taut.game.TautData;
 import com.taut.game.levels.test.TestData;
+import com.taut.game.models.TautCamera;
 
 public class TestScreen extends ScreenAdapter implements InputProcessor {
-	// TODO: Clean up code
-	// TODO: Convert this into an extendable base class for all screens
-	// TODO: Convert classes in here into extended versions (i.e., TautSprite, TautCamera, etc) 
-		// cleaner code (less boilerplate) and more flexible
 	Taut game;
-	OrthographicCamera camera;
+	TautCamera camera;
 	TiledMap map;
 	OrthogonalTiledMapRenderer renderer;
 	Animation<TextureRegion> walkAnimation;
@@ -35,11 +29,9 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 	Vector3 playerPosition;
 	float walkAnimationTime;
 	Direction direction;
+	ShapeRenderer shapeRenderer;
 	
-	/** 
-	 * used for sprite direction
-	 */
-	enum Direction {FORWARD,BACKWARD}
+	enum Direction{FORWARD,BACKWARD}
 	
 	private static class Inputs
 	{
@@ -58,19 +50,15 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 	public TestScreen(final Taut game)
 	{
 		super();
-		float width = Gdx.graphics.getWidth();
-		float height = Gdx.graphics.getHeight();
 		this.game = game;
 		map = TestData.getMainMap();
 		walkAnimation = TautData.getWalkAnimation();
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, width, height);		
-		camera.zoom = .04f;
-		camera.position.set((width / 2f) * camera.zoom, (height / 2f) * camera.zoom, 0f);
-		camera.update();
+		camera = new TautCamera(16);
 		renderer = new OrthogonalTiledMapRenderer(map, 1f/16f);
 		batch = new SpriteBatch();
 		playerPosition = new Vector3(0f,0f,0f);
+		shapeRenderer = new ShapeRenderer();
+		shapeRenderer.setAutoShapeType(true);
 		Gdx.input.setInputProcessor(this);
 	}
 	
@@ -83,46 +71,72 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
         
         
 		handleInput(delta);
-		
-		Sprite currentSprite = new Sprite(walkAnimation.getKeyFrame(walkAnimationTime, true));
 
-		Vector3 cameraPosition = getCameraPosition(playerPosition, currentSprite); // applies bounds to the player position before moving camera
-		camera.position.set(cameraPosition);
-		camera.update();
+		int mapWidth = map.getProperties().get("width", Integer.class);
+		int mapHeight = map.getProperties().get("height", Integer.class);
 		
+		if(playerPosition.x < 0.0f)
+			playerPosition.x = 0.0f;
+		if(playerPosition.x > ((float)mapWidth)-1f)
+			playerPosition.x = ((float)mapWidth)-1f;
+		if(playerPosition.y < 0.0f)
+			playerPosition.y = 0.0f;
+		if(playerPosition.y > ((float)mapHeight)-1f)
+			playerPosition.y = ((float)mapHeight)-1f;
+		
+		camera.setCameraPositionFromPlayer(playerPosition, mapWidth, mapHeight);
+		
+		camera.update();
 		Vector3 projectedPlayerPosition = 
 				camera.project(new Vector3(playerPosition)); // convert from world units to camera units
-		currentSprite.setScale((1f / currentSprite.getWidth())/camera.zoom, 
-				((1f / currentSprite.getHeight())/camera.zoom) * (currentSprite.getHeight()/currentSprite.getWidth()));
+		
+
+		Sprite currentSprite= new Sprite(walkAnimation.getKeyFrame(walkAnimationTime, true));
+		
+		Vector3 spriteBottomLeftCorner = new Vector3(projectedPlayerPosition.x, projectedPlayerPosition.y, 0f);
+		Vector3 spriteTopRightCorner = new Vector3(projectedPlayerPosition.x + currentSprite.getRegionWidth(), 
+				projectedPlayerPosition.y + currentSprite.getRegionHeight(), 0f);
+		
+		
+		Vector3 spriteDimensions = new Vector3(camera.convertPixelLengthToWorld(spriteTopRightCorner.x - spriteBottomLeftCorner.x),
+				camera.convertPixelLengthToWorld(spriteTopRightCorner.y - spriteBottomLeftCorner.y), 0f);
+				
+		currentSprite.setScale(1f / spriteDimensions.x, 1f / spriteDimensions.y);
+		
 		currentSprite.setX(projectedPlayerPosition.x);
 		currentSprite.setY(projectedPlayerPosition.y);
-		if(direction == Direction.BACKWARD) currentSprite.flip(true, false);
+		currentSprite.setOrigin(projectedPlayerPosition.x, projectedPlayerPosition.y);
+		if(direction == Direction.BACKWARD)
+			currentSprite.flip(true, false);
 		renderer.setView(camera);
 		renderer.render();
+		
 		
 		batch.begin();
 		currentSprite.draw(batch);
 		batch.end();
-	}
-	
-	public Vector3 getCameraPosition(Vector3 playerPosition, Sprite playerSprite)
-	{
-		// set camera coords to center of sprite and account for the fact that sprites are drawn from bottom left and are scaled
-		float camX = playerPosition.x + (playerSprite.getWidth() * camera.zoom / 2f); 
-		float camY = playerPosition.y + (playerSprite.getHeight() * camera.zoom / 2f); 
-		// TODO: make these actually the center of the sprite
 		
-		float halfHeight = (Gdx.graphics.getHeight() / 2f) * camera.zoom;
-		float halfWidth = (Gdx.graphics.getWidth() / 2f) * camera.zoom;
+		Rectangle boundingSpriteRect = currentSprite.getBoundingRectangle();
 		
-		// add left/right/up/down bounds to camera motion 
-		camX = Math.max(camX, halfWidth); // left
-		camX = Math.min(camX, map.getProperties().get("width",Integer.class) - halfWidth); // right
-		camY = Math.max(camY, halfHeight); // up
-		camY = Math.min(camY, map.getProperties().get("height",Integer.class) - halfHeight); // down
+		shapeRenderer.begin();
+		shapeRenderer.rect(boundingSpriteRect.x, boundingSpriteRect.y, boundingSpriteRect.width, boundingSpriteRect.height);
+		for(int x = 0; x < mapWidth; x++)
+		{
+			Vector3 lineStart = camera.project(new Vector3(x, 0f, 0f));
+			Vector3 lineEnd = camera.project(new Vector3(x, mapHeight, 0f));
+			shapeRenderer.line(lineStart, lineEnd);
+		}
+		for(int y = 0; y < mapHeight; y++)
+		{
+			Vector3 lineStart = camera.project(new Vector3(0f, y, 0f));
+			Vector3 lineEnd = camera.project(new Vector3(mapWidth, y, 0f));
+			shapeRenderer.line(lineStart, lineEnd);
+		}
+		shapeRenderer.end();
 		
 		
-		return new Vector3(camX, camY, 0f);
+		System.out.println("camera width: " + camera.viewportWidth + " camera height: " + camera.viewportHeight);
+		System.out.println("screen width: " + Gdx.graphics.getWidth() + " screen height: " + Gdx.graphics.getHeight());
 	}
 	
 	
@@ -132,7 +146,7 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		boolean addedDeltaToWalk = false;
 		if(Inputs.left.isPressed)
 		{
-			direction = Direction.BACKWARD; 
+			direction = Direction.BACKWARD;
 			translation.x -= movementMagnitude(Inputs.left.timeSincePressed);
 			Inputs.left.timeSincePressed += delta;
 			if(addedDeltaToWalk == false)
@@ -175,7 +189,7 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		
 		if(Inputs.left.isPressed && Inputs.right.isPressed)
 		{
-			direction = Direction.FORWARD; 
+			direction = Direction.FORWARD;
 			translation.x = 0.0f;
 			Inputs.left.timeSincePressed = 0.0;
 			Inputs.right.timeSincePressed = 0.0;
@@ -193,15 +207,10 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		}
 		
 		playerPosition.add(translation);
-		// TODO: Limit player position to where it doesn't 
-		// let the sprite leave the map
-		// (harder than it sounds, limiting by (0,0) and
-		// map height/width doesn't work)
 	}
 
 	private float movementMagnitude(double time)
 	{
-		//TODO: Convert movement to being tile based opposed to free movement
 		float maxMagnitude = 20.0f * camera.zoom;
 		float timeToEven = 1.0f;
 		if(time >= timeToEven)
@@ -213,24 +222,31 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 			return output;
 		}
 	}
+	
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+		camera.viewportHeight = height;
+		camera.viewportWidth = width;
+	}
 
 	
 	@Override
 	public boolean keyUp(int keycode) {
 		
-		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
+		if(keycode == Input.Keys.LEFT)
 		{
 			Inputs.left.isPressed = false;
 			Inputs.left.timeSincePressed = 0.0;
-		}else if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D)
+		}else if(keycode == Input.Keys.RIGHT)
 		{
 			Inputs.right.isPressed = false;
 			Inputs.right.timeSincePressed = 0.0;
-		}else if(keycode == Input.Keys.UP || keycode == Input.Keys.W)
+		}else if(keycode == Input.Keys.UP)
 		{
 			Inputs.up.isPressed = false;
 			Inputs.up.timeSincePressed = 0.0;
-		}else if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S)
+		}else if(keycode == Input.Keys.DOWN)
 		{
 			Inputs.down.isPressed = false;
 			Inputs.down.timeSincePressed = 0.0;
@@ -242,16 +258,16 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 	@Override
 	public boolean keyDown(int keycode) {
 		
-		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
+		if(keycode == Input.Keys.LEFT)
 		{
 			Inputs.left.isPressed = true;
-		}else if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D)
+		}else if(keycode == Input.Keys.RIGHT)
 		{
 			Inputs.right.isPressed = true;
-		}else if(keycode == Input.Keys.UP || keycode == Input.Keys.W)
+		}else if(keycode == Input.Keys.UP)
 		{
 			Inputs.up.isPressed = true;
-		}else if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S)
+		}else if(keycode == Input.Keys.DOWN)
 		{
 			Inputs.down.isPressed = true;
 		}
