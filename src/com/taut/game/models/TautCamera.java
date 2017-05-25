@@ -8,17 +8,16 @@ import com.badlogic.gdx.math.Vector3;
 public class TautCamera extends OrthographicCamera {
 	public TautCamera(int tileSize)
 	{
-		super(5f, 5f * ((float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth()));
+		super();
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 
 		zoom = (float)tileSize / width;
-		//zoom = .04f;
+
 		setToOrtho(false, width, height);
 		viewportHeight = height;
 		viewportWidth = width;
 		
-		//position.set(getViewWidth()/2f, getViewHeight()/2f, 0f);
 		update();
 	}
 	
