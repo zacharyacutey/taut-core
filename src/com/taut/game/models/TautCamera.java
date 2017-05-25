@@ -2,42 +2,56 @@ package com.taut.game.models;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 
 public class TautCamera extends OrthographicCamera {
 	public TautCamera(int tileSize)
 	{
-		super();
+		super(5f, 5f * ((float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth()));
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 
 		zoom = (float)tileSize / width;
+		//zoom = .04f;
 		setToOrtho(false, width, height);
-		
+		viewportHeight = height;
+		viewportWidth = width;
 		
 		//position.set(getViewWidth()/2f, getViewHeight()/2f, 0f);
 		update();
 	}
 	
-	public void setCameraPositionFromPlayer(Vector3 playerPosition, int mapWidth, int mapHeight)
+	public void setCameraPositionFromPlayer(Sprite player, Vector3 playerPosition, int mapWidth, int mapHeight)
 	{
-		position.set(getCameraPositionFromPlayer(playerPosition, mapWidth, mapHeight));
+		position.set(getCameraPositionFromPlayer(player, playerPosition, mapWidth, mapHeight));
 	}
 	
-	private Vector3 getCameraPositionFromPlayer(Vector3 playerPosition, int mapWidth, int mapHeight)
+	private Vector3 getCameraPositionFromPlayer(Sprite player, Vector3 playerPosition, int mapWidth, int mapHeight)
 	{
+		float halfSpriteWidthInWorld = (convertPixelLengthToWorld(player.getWidth())*player.getScaleX())/2f;
+		float halfSpriteHeightInWorld = (convertPixelLengthToWorld(player.getHeight())*player.getScaleY())/2f;
 		
-		float camX = playerPosition.x + convertPixelLengthToWorld(viewportWidth)/2f; // this follows w/ sprite at bottom left
-		float camY = playerPosition.y + convertPixelLengthToWorld(viewportHeight)/2f; 
-		//System.out.println("test " + convertPixelLengthToWorld(viewportWidth)/2f);
-		/*float halfViewHeight = getViewHeight()/ 2f;
-		float halfViewWidth = getViewWidth() /2f;
 		
-		camX = Math.max(camX, halfViewWidth);
-		camX = Math.min(camX, mapWidth - halfViewWidth);
-		camY = Math.max(camY, halfViewHeight);
-		camY = Math.min(camY, mapHeight - halfViewHeight);*/
+		float camX = playerPosition.x + halfSpriteWidthInWorld; 
+		float camY = playerPosition.y + halfSpriteHeightInWorld; 
 		
+		
+		float halfViewHeightInWorld = convertPixelLengthToWorld(viewportHeight / 2f);
+		float halfViewWidthInWorld = convertPixelLengthToWorld(viewportWidth / 2f);
+		
+		
+		//make sure camera is within map bounds
+		camX = Math.max(camX, halfViewWidthInWorld);
+		camX = Math.min(camX, mapWidth - halfViewWidthInWorld);
+		camY = Math.max(camY, halfViewHeightInWorld);
+		camY = Math.min(camY, mapHeight - halfViewHeightInWorld); 
+		
+		
+		System.out.println("Player pos x " + playerPosition.x + "\tPlayer pos y " + playerPosition.y);
+		System.out.println("Camera pos x " + camX + "\tCamera pos y " + camY);
+
+
 		return new Vector3(camX, camY, 0f);
 	}
 	

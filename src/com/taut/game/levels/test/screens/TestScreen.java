@@ -23,15 +23,15 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 	Taut game;
 	TautCamera camera;
 	TiledMap map;
-	OrthogonalTiledMapRenderer renderer;
+	OrthogonalTiledMapRenderer mapRenderer;
 	Animation<TextureRegion> walkAnimation;
-	SpriteBatch batch;
+	SpriteBatch spriteBatch;
 	Vector3 playerPosition;
 	float walkAnimationTime;
-	Direction direction;
+	SpriteDirection spriteDirection;
 	ShapeRenderer shapeRenderer;
 	
-	enum Direction{FORWARD,BACKWARD}
+	enum SpriteDirection{FORWARD,BACKWARD}
 	
 	private static class Inputs
 	{
@@ -54,8 +54,8 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		map = TestData.getMainMap();
 		walkAnimation = TautData.getWalkAnimation();
 		camera = new TautCamera(16);
-		renderer = new OrthogonalTiledMapRenderer(map, 1f/16f);
-		batch = new SpriteBatch();
+		mapRenderer = new OrthogonalTiledMapRenderer(map, 1f/16f);
+		spriteBatch = new SpriteBatch();
 		playerPosition = new Vector3(0f,0f,0f);
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
@@ -68,7 +68,7 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
+       
         
 		handleInput(delta);
 
@@ -84,37 +84,34 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		if(playerPosition.y > ((float)mapHeight)-1f)
 			playerPosition.y = ((float)mapHeight)-1f;
 		
-		camera.setCameraPositionFromPlayer(playerPosition, mapWidth, mapHeight);
+		Sprite currentSprite = new Sprite(walkAnimation.getKeyFrame(walkAnimationTime, true));
 		
-		camera.update();
-		Vector3 projectedPlayerPosition = 
-				camera.project(new Vector3(playerPosition)); // convert from world units to camera units
-		
-
-		Sprite currentSprite= new Sprite(walkAnimation.getKeyFrame(walkAnimationTime, true));
-		
-		Vector3 spriteBottomLeftCorner = new Vector3(projectedPlayerPosition.x, projectedPlayerPosition.y, 0f);
-		Vector3 spriteTopRightCorner = new Vector3(projectedPlayerPosition.x + currentSprite.getRegionWidth(), 
-				projectedPlayerPosition.y + currentSprite.getRegionHeight(), 0f);
-		
-		
+		Vector3 spriteBottomLeftCorner = new Vector3(0f, 0f, 0f);
+		Vector3 spriteTopRightCorner = new Vector3(currentSprite.getRegionWidth(), 
+				currentSprite.getRegionHeight(), 0f);
 		Vector3 spriteDimensions = new Vector3(camera.convertPixelLengthToWorld(spriteTopRightCorner.x - spriteBottomLeftCorner.x),
 				camera.convertPixelLengthToWorld(spriteTopRightCorner.y - spriteBottomLeftCorner.y), 0f);
-				
-		currentSprite.setScale(1f / spriteDimensions.x, 1f / spriteDimensions.y);
+		
+		currentSprite.setOrigin(0f, 0f); // set origin of sprite to the bottom left corner
+		currentSprite.setScale(1f / spriteDimensions.x, 1f / spriteDimensions.y); // set sprite scale to make it 1 tile tall and 1 tile wide
+		
+		camera.setCameraPositionFromPlayer(currentSprite, playerPosition, mapWidth, mapHeight);
+		
+		camera.update();
+		Vector3 projectedPlayerPosition = camera.project(new Vector3(playerPosition)); // convert from world units to camera units
 		
 		currentSprite.setX(projectedPlayerPosition.x);
 		currentSprite.setY(projectedPlayerPosition.y);
-		currentSprite.setOrigin(projectedPlayerPosition.x, projectedPlayerPosition.y);
-		if(direction == Direction.BACKWARD)
+		if(spriteDirection == SpriteDirection.BACKWARD) 
 			currentSprite.flip(true, false);
-		renderer.setView(camera);
-		renderer.render();
+		
+		mapRenderer.setView(camera);
+		mapRenderer.render();
 		
 		
-		batch.begin();
-		currentSprite.draw(batch);
-		batch.end();
+		spriteBatch.begin();
+		currentSprite.draw(spriteBatch);
+		spriteBatch.end();
 		
 		Rectangle boundingSpriteRect = currentSprite.getBoundingRectangle();
 		
@@ -146,7 +143,7 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		boolean addedDeltaToWalk = false;
 		if(Inputs.left.isPressed)
 		{
-			direction = Direction.BACKWARD;
+			spriteDirection = SpriteDirection.BACKWARD;
 			translation.x -= movementMagnitude(Inputs.left.timeSincePressed);
 			Inputs.left.timeSincePressed += delta;
 			if(addedDeltaToWalk == false)
@@ -157,7 +154,7 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		}
 		if(Inputs.right.isPressed)
 		{
-			direction = Direction.FORWARD;
+			spriteDirection = SpriteDirection.FORWARD;
 			translation.x += movementMagnitude(Inputs.right.timeSincePressed);
 			Inputs.right.timeSincePressed += delta;
 			if(addedDeltaToWalk == false)
@@ -189,7 +186,7 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		
 		if(Inputs.left.isPressed && Inputs.right.isPressed)
 		{
-			direction = Direction.FORWARD;
+			spriteDirection = SpriteDirection.FORWARD;
 			translation.x = 0.0f;
 			Inputs.left.timeSincePressed = 0.0;
 			Inputs.right.timeSincePressed = 0.0;
