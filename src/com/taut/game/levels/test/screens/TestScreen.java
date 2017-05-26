@@ -30,7 +30,7 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 	SpriteDirection spriteDirection;
 	ShapeRenderer shapeRenderer;
 	
-	enum SpriteDirection{FORWARD,BACKWARD}
+	enum SpriteDirection {FORWARD,BACKWARD}
 	
 	private static class Inputs
 	{
@@ -45,6 +45,15 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		public static Key up = new Key();
 		public static Key down = new Key();
 	}
+	
+	private static class PlayerMovement
+	{
+		public MovementDirection xMovement = MovementDirection.NONE;
+		public MovementDirection yMovement = MovementDirection.NONE;
+		public static Vector3 pastTranslation;
+	}
+	static enum MovementDirection {NEGATIVE, NONE, POSITIVE}
+
 	
 	public TestScreen(final Taut game)
 	{
@@ -84,7 +93,7 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 			playerPosition.y = ((float)mapHeight)-1f;
 		
 		TautSprite currentSprite = animatedSprite.getSpriteKeyFrame(walkAnimationTime, true);
-		currentSprite.setScaleInTiles(camera, 1f, 1.5f);
+		currentSprite.setScaleInTiles(camera, 1f, 1f);
 
 		camera.setCameraPositionFromPlayer(currentSprite, playerPosition, mapWidth, mapHeight);
 		
@@ -131,85 +140,138 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 	
 	private void handleInput(float delta)
 	{
-		Vector3 translation = new Vector3();
-		boolean addedDeltaToWalk = false;
+		PlayerMovement playerMovement = new PlayerMovement();
 		if(Inputs.left.isPressed)
 		{
 			spriteDirection = SpriteDirection.BACKWARD;
-			translation.x -= movementMagnitude(Inputs.left.timeSincePressed);
+			playerMovement.xMovement = MovementDirection.NEGATIVE;
 			Inputs.left.timeSincePressed += delta;
-			if(addedDeltaToWalk == false)
-			{
-				walkAnimationTime += delta;
-				addedDeltaToWalk = true;
-			}
 		}
 		if(Inputs.right.isPressed)
 		{
 			spriteDirection = SpriteDirection.FORWARD;
-			translation.x += movementMagnitude(Inputs.right.timeSincePressed);
+			playerMovement.xMovement = MovementDirection.POSITIVE;
 			Inputs.right.timeSincePressed += delta;
-			if(addedDeltaToWalk == false)
-			{
-				walkAnimationTime += delta;
-				addedDeltaToWalk = true;
-			}
 		}
 		if(Inputs.up.isPressed)
 		{
-			translation.y += movementMagnitude(Inputs.up.timeSincePressed);
 			Inputs.up.timeSincePressed += delta;
-			if(addedDeltaToWalk == false)
-			{
-				walkAnimationTime += delta;
-				addedDeltaToWalk = true;
-			}
+			playerMovement.yMovement = MovementDirection.POSITIVE;
 		}
 		if(Inputs.down.isPressed)
 		{
-			translation.y -= movementMagnitude(Inputs.down.timeSincePressed);
 			Inputs.down.timeSincePressed += delta;
-			if(addedDeltaToWalk == false)
-			{
-				walkAnimationTime += delta;
-				addedDeltaToWalk = true;
-			}
+			playerMovement.yMovement = MovementDirection.NEGATIVE;
 		}
 		
 		if(Inputs.left.isPressed && Inputs.right.isPressed)
 		{
 			spriteDirection = SpriteDirection.FORWARD;
-			translation.x = 0.0f;
+			playerMovement.xMovement = MovementDirection.NONE;
 			Inputs.left.timeSincePressed = 0.0;
 			Inputs.right.timeSincePressed = 0.0;
 		}
 		if(Inputs.up.isPressed && Inputs.down.isPressed)
 		{
-			translation.y = 0.0f;
+			playerMovement.yMovement = MovementDirection.NONE;
 			Inputs.up.timeSincePressed = 0.0;
 			Inputs.down.timeSincePressed = 0.0;
 		}
 		
-		if(translation.x == 0.0f && translation.y == 0.0f && addedDeltaToWalk)
-		{
-			walkAnimationTime -= delta;
-		}
 		
+		// based upon input, get player translation
+		Vector3 translation = getPlayerTranslation(playerMovement, delta);
+		
+		if(translation.x != 0.0f || translation.y != 0.0f) // if sprite is moving, animate him
+		{
+			walkAnimationTime += delta;
+		}
+		PlayerMovement.pastTranslation = translation; // set pastTranslation for next run
 		playerPosition.add(translation);
 	}
-
-	private float movementMagnitude(double time)
+	
+	private Vector3 getPlayerTranslation(PlayerMovement playerMovement, float delta)
 	{
-		float maxMagnitude = 20.0f * camera.zoom;
-		float timeToEven = 1.0f;
-		if(time >= timeToEven)
+		Vector3 translation = new Vector3(0f,0f,0f);
+		if(playerMovement.xMovement == MovementDirection.POSITIVE)
 		{
-			return maxMagnitude;
-		}else
+			translation.x = getMovementMagnitude(delta);
+		}else if(playerMovement.xMovement == MovementDirection.NEGATIVE)
 		{
-			float output = ((float)Math.pow(time, 1.1) / timeToEven) * maxMagnitude;
-			return output;
+			translation.x = -getMovementMagnitude(delta);
+		}else if(playerMovement.xMovement == MovementDirection.NONE)
+		{
+			if(PlayerMovement.pastTranslation != null && playerPosition.x%1.0 != 0.0f)// if not currently at tile, but not set to move 
+			{ 
+				if(PlayerMovement.pastTranslation.x > 0.0f) // end on next positive tile
+				{
+					float magnitude = getMovementMagnitude(delta);
+					float nextTile = (float)Math.ceil(playerPosition.x);
+					
+					if(playerPosition.x + magnitude > nextTile) // if magnitude would overshoot next tile
+					{
+						magnitude = nextTile - playerPosition.x; // set magnitude to not overshoot
+					}
+					
+					translation.x = magnitude;
+				}else if(PlayerMovement.pastTranslation.x < 0.0f) // end on next negative tile
+				{
+					float magnitude = getMovementMagnitude(delta);
+					float nextTile = (float)Math.floor(playerPosition.x);
+					
+					if(playerPosition.x - magnitude < nextTile) // if magnitude would overshoot next tile
+					{
+						magnitude = playerPosition.x - nextTile; // set magnitude to not overshoot
+					}
+					
+					translation.x = -magnitude;
+				}
+			}
 		}
+		
+		
+		
+		if(playerMovement.yMovement == MovementDirection.POSITIVE)
+		{
+			translation.y = getMovementMagnitude(delta);
+		}else if(playerMovement.yMovement == MovementDirection.NEGATIVE)
+		{
+			translation.y = -getMovementMagnitude(delta);
+		}else if(playerMovement.yMovement == MovementDirection.NONE)
+		{
+			if(PlayerMovement.pastTranslation != null && playerPosition.y%1.0 != 0.0f)// if not currently at tile, but not set to move 
+			{ 
+				if(PlayerMovement.pastTranslation.y > 0.0f) // end on next positive tile
+				{
+					float magnitude = getMovementMagnitude(delta);
+					float nextTile = (float)Math.ceil(playerPosition.y);
+					
+					if(playerPosition.y + magnitude > nextTile) // if magnitude would overshoot next tile
+					{
+						magnitude = nextTile - playerPosition.y; // set magnitude to not overshoot
+					}
+					
+					translation.y = magnitude;
+				}else if(PlayerMovement.pastTranslation.y < 0.0f) // end on next negative tile
+				{
+					float magnitude = getMovementMagnitude(delta);
+					float nextTile = (float)Math.floor(playerPosition.y);
+					
+					if(playerPosition.y - magnitude < nextTile) // if magnitude would overshoot next tile
+					{
+						magnitude = playerPosition.y - nextTile; // set magnitude to not overshoot
+					}
+					
+					translation.y = -magnitude;
+				}
+			}
+		}
+		return translation;
+	}
+
+	private float getMovementMagnitude(float delta)
+	{
+		return 3.0f * delta; // two tiles per second, linear
 	}
 	
 	@Override
