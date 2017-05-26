@@ -21,22 +21,20 @@ public class TautCamera extends OrthographicCamera {
 		update();
 	}
 	
-	public void setCameraPositionFromPlayer(Player player, TiledMap map)
+	public void setCameraPositionFromPlayer(Player player, TautSprite sprite, TiledMap map)
 	{
-		position.set(getCameraPositionFromPlayer(player, map));
+		position.set(getCameraPositionFromPlayer(player, sprite , map));
 	}
 	
-	private Vector3 getCameraPositionFromPlayer(Player player, TiledMap map)
+	private Vector3 getCameraPositionFromPlayer(Player player, TautSprite sprite, TiledMap map)
 	{
-		TautSprite sprite = player.getSprite();
 		Vector3 playerPosition = player.getPlayerWorldPosition();
 
 		float spriteWidth = convertPixelLengthToWorld(sprite.getWidth())*sprite.getScaleX();
 		float spriteHeight = convertPixelLengthToWorld(sprite.getHeight())*sprite.getScaleY();
-		
-		
-		Vector3 coords = new Vector3(playerPosition.x + spriteWidth/2f, 
-				playerPosition.y + spriteHeight/2f, 0f);
+				
+		Vector3 coords = new Vector3(playerPosition.x + (spriteWidth/2f), 
+				playerPosition.y + (spriteHeight/2f), 0f);
 		
 		putCoordsInMapBounds(coords, map);
 

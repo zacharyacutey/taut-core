@@ -54,7 +54,7 @@ public class TestScreen extends ScreenAdapter {
 		
 		TautSprite currentSprite = player.getScaledSprite(camera, 1, 1);
 
-		camera.setCameraPositionFromPlayer(player, map);
+		camera.setCameraPositionFromPlayer(player, currentSprite, map);
 		
 		camera.update();
 		
