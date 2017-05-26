@@ -29,6 +29,7 @@ public class Player implements InputProcessor {
 		{
 			protected Key(){}
 			public boolean isPressed = false;
+			@SuppressWarnings("unused")
 			public double timeSincePressed = 0.0; // unused; may be used in future for accel/decel
 		}
 		public static Key left = new Key();
