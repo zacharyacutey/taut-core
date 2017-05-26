@@ -17,7 +17,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.taut.game.Taut;
 import com.taut.game.TautData;
 import com.taut.game.levels.test.TestData;
-import com.taut.game.models.TautCamera;
+import com.taut.game.objects.TautCamera;
 
 public class TestScreen extends ScreenAdapter implements InputProcessor {
 	Taut game;

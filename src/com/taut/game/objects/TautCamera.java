@@ -1,4 +1,4 @@
-package com.taut.game.models;
+package com.taut.game.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
