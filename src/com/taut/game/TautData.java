@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.taut.game.objects.TautAnimatedSprite;
 
 // Where the data that the game or the
 // base screen class relies upon goes.
@@ -43,7 +44,7 @@ public class TautData {
 			walkSheet.dispose();
 	}
 	
-	public static Animation<TextureRegion> getWalkAnimation()
+	public static TautAnimatedSprite getWalkAnimation()
 	{
 		
 		int width = getWalkSheetWidth();
@@ -64,6 +65,6 @@ public class TautData {
 			}
 		}
 		
-		return new Animation<TextureRegion>(TautData.getWalkSheetSpeed(), oneDimensionalWalkSheet);
+		return new TautAnimatedSprite(TautData.getWalkSheetSpeed(), oneDimensionalWalkSheet);
 	}
 }

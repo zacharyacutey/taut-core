@@ -5,26 +5,25 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.taut.game.Taut;
 import com.taut.game.TautData;
 import com.taut.game.levels.test.TestData;
+import com.taut.game.objects.TautAnimatedSprite;
 import com.taut.game.objects.TautCamera;
+import com.taut.game.objects.TautOrthogonalTiledMapRenderer;
+import com.taut.game.objects.TautSprite;
 
 public class TestScreen extends ScreenAdapter implements InputProcessor {
 	Taut game;
 	TautCamera camera;
 	TiledMap map;
-	OrthogonalTiledMapRenderer mapRenderer;
-	Animation<TextureRegion> walkAnimation;
+	TautOrthogonalTiledMapRenderer mapRenderer;
+	TautAnimatedSprite animatedSprite;
 	SpriteBatch spriteBatch;
 	Vector3 playerPosition;
 	float walkAnimationTime;
@@ -52,9 +51,9 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		super();
 		this.game = game;
 		map = TestData.getMainMap();
-		walkAnimation = TautData.getWalkAnimation();
+		animatedSprite = TautData.getWalkAnimation();
 		camera = new TautCamera(16);
-		mapRenderer = new OrthogonalTiledMapRenderer(map, 1f/16f);
+		mapRenderer = new TautOrthogonalTiledMapRenderer(map, 1f/16f);
 		spriteBatch = new SpriteBatch();
 		playerPosition = new Vector3(0f,0f,0f);
 		shapeRenderer = new ShapeRenderer();
@@ -84,21 +83,14 @@ public class TestScreen extends ScreenAdapter implements InputProcessor {
 		if(playerPosition.y > ((float)mapHeight)-1f)
 			playerPosition.y = ((float)mapHeight)-1f;
 		
-		Sprite currentSprite = new Sprite(walkAnimation.getKeyFrame(walkAnimationTime, true));
-		
-		Vector3 spriteBottomLeftCorner = new Vector3(0f, 0f, 0f);
-		Vector3 spriteTopRightCorner = new Vector3(currentSprite.getRegionWidth(), 
-				currentSprite.getRegionHeight(), 0f);
-		Vector3 spriteDimensions = new Vector3(camera.convertPixelLengthToWorld(spriteTopRightCorner.x - spriteBottomLeftCorner.x),
-				camera.convertPixelLengthToWorld(spriteTopRightCorner.y - spriteBottomLeftCorner.y), 0f);
-		
-		currentSprite.setOrigin(0f, 0f); // set origin of sprite to the bottom left corner
-		currentSprite.setScale(1f / spriteDimensions.x, 1f / spriteDimensions.y); // set sprite scale to make it 1 tile tall and 1 tile wide
-		
+		TautSprite currentSprite = animatedSprite.getSpriteKeyFrame(walkAnimationTime, true);
+		currentSprite.setScaleInTiles(camera, 1f, 1.5f);
+
 		camera.setCameraPositionFromPlayer(currentSprite, playerPosition, mapWidth, mapHeight);
 		
 		camera.update();
 		Vector3 projectedPlayerPosition = camera.project(new Vector3(playerPosition)); // convert from world units to camera units
+		
 		
 		currentSprite.setX(projectedPlayerPosition.x);
 		currentSprite.setY(projectedPlayerPosition.y);
