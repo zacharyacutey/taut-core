@@ -1,5 +1,6 @@
 package com.taut.game.objects;
 
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -42,6 +43,25 @@ public class TautSprite extends Sprite {
 		
 		return new Vector2(1f / spriteDimensions.x, 1f / spriteDimensions.y);		
 	}
+
 	
+	public static TextureRegion[] splitTexture(Texture texture, int width, int height)
+	{
+		TextureRegion[][] twoDimensionalWalkSheet = TextureRegion.split(texture, 
+				texture.getWidth() / width, texture.getHeight() / height);
+		
+		
+		
+		int index = 0;
+		TextureRegion[] oneDimensionalWalkSheet = new TextureRegion[width * height];
+		for(int x = 0; x < twoDimensionalWalkSheet.length; x++)
+		{
+			for(int y = 0; y < twoDimensionalWalkSheet[x].length; y++)
+			{
+				oneDimensionalWalkSheet[index++] = twoDimensionalWalkSheet[x][y];
+			}
+		}
+		return oneDimensionalWalkSheet;
+	}
 	
 }

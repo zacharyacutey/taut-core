@@ -6,8 +6,8 @@ import com.badlogic.gdx.utils.Array;
 
 public class TautAnimatedSprite extends Animation<TextureRegion> {
 
-	public TautAnimatedSprite(float frameDuration, TextureRegion[] keyFrames, PlayMode playMode) {
-		super(frameDuration, new Array<TextureRegion>(keyFrames), playMode);
+	public TautAnimatedSprite(float frameDuration, TextureRegion[] keyFrames, PlayMode looping) {
+		super(frameDuration, new Array<TextureRegion>(keyFrames), looping);
 	}
 	public TautAnimatedSprite(float frameDuration, TextureRegion[] keyFrames) {
 		super(frameDuration, keyFrames);
