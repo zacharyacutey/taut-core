@@ -13,6 +13,7 @@ public class Player implements InputProcessor {
 	private Vector3 playerPosition;
 	private SpriteDirection spriteDirection;
 	private float walkAnimationTime;
+	private boolean isUsingInput;
 
 	
 	public Player()
@@ -47,6 +48,16 @@ public class Player implements InputProcessor {
 	static enum MovementDirection {NEGATIVE, NONE, POSITIVE}
 	
 	
+	
+	public void isUsingInput(boolean isUsingInput)
+	{
+		this.isUsingInput = isUsingInput;
+	}
+	
+	public boolean isUsingInput()
+	{
+		return isUsingInput;
+	}
 	
 	public boolean isPlayerInMapBounds(TiledMap map)
 	{
@@ -83,6 +94,9 @@ public class Player implements InputProcessor {
 	
 	public void update(float delta, TiledMap map)
 	{
+		if(!isUsingInput)
+			return;
+		
 		PlayerMovement playerMovement = new PlayerMovement();
 		if(Inputs.left.isPressed)
 		{
