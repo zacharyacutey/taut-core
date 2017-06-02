@@ -9,21 +9,17 @@ import com.taut.game.TautData;
 public class Player implements InputProcessor {
 	
 	public final float TILES_PER_SECOND = 3.0f;
-	private TautAnimatedSprite walkAnimation;
+	public TautSprite playerSprite = new TautSprite();
 	private Vector3 playerPosition;
-	private SpriteDirection spriteDirection;
-	private float walkAnimationTime;
 	private boolean isUsingInput;
 
 	
 	public Player()
 	{
-		walkAnimation = TautData.getWalkAnimation();
+		playerSprite.walkAnimation = TautData.getWalkAnimation();
 		playerPosition = new Vector3(0f,0f,0f);
 		isUsingInput = true;
 	}
-	
-	enum SpriteDirection {FORWARD,BACKWARD}
 	
 	private static class Inputs
 	{
@@ -101,13 +97,13 @@ public class Player implements InputProcessor {
 		PlayerMovement playerMovement = new PlayerMovement();
 		if(Inputs.left.isPressed)
 		{
-			spriteDirection = SpriteDirection.BACKWARD;
+			playerSprite.setSpriteBackward();
 			playerMovement.xMovement = MovementDirection.NEGATIVE;
 			Inputs.left.timeSincePressed += delta;
 		}
 		if(Inputs.right.isPressed)
 		{
-			spriteDirection = SpriteDirection.FORWARD;
+			playerSprite.setSpriteForward();
 			playerMovement.xMovement = MovementDirection.POSITIVE;
 			Inputs.right.timeSincePressed += delta;
 		}
@@ -124,7 +120,7 @@ public class Player implements InputProcessor {
 		
 		if(Inputs.left.isPressed && Inputs.right.isPressed)
 		{
-			spriteDirection = SpriteDirection.FORWARD;
+			playerSprite.setSpriteForward();
 			playerMovement.xMovement = MovementDirection.NONE;
 			Inputs.left.timeSincePressed = 0.0;
 			Inputs.right.timeSincePressed = 0.0;
@@ -142,7 +138,7 @@ public class Player implements InputProcessor {
 		
 		if(translation.x != 0.0f || translation.y != 0.0f) // if sprite is moving, animate him
 		{
-			addWalkAnimationTime(delta);
+			playerSprite.addWalkAnimationTime(delta);
 		}
 		PlayerMovement.pastTranslation = translation; // set pastTranslation for next run
 		playerPosition.add(translation);
@@ -154,31 +150,6 @@ public class Player implements InputProcessor {
 	public Vector3 getPlayerWorldPosition()
 	{
 		return playerPosition;
-	}
-	
-	private void addWalkAnimationTime(float delta)
-	{
-		walkAnimationTime += delta;
-		walkAnimationTime %= walkAnimation.getAnimationDuration(); // to prevent overflow with enough time
-	}
-	
-	public TautSprite getSprite()
-	{
-		TautSprite sprite = walkAnimation.getSpriteKeyFrame(walkAnimationTime, true);
-				
-		if(spriteDirection == SpriteDirection.BACKWARD)
-			sprite.flip(true, false);
-		
-		return sprite;
-	}
-	
-	public TautSprite getScaledSprite(TautCamera camera, int x, int y)
-	{
-		TautSprite sprite = getSprite();
-		
-		sprite.setScaleInTiles(camera, x, y);
-		
-		return sprite;
 	}
 	
 	private Vector3 getPlayerTranslation(PlayerMovement playerMovement, float delta)
@@ -308,8 +279,8 @@ public class Player implements InputProcessor {
 		
 		return false;
 	}
-
 	
+
 	public boolean keyTyped(char character) {
 		return false;
 	}

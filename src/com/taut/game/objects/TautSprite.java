@@ -8,14 +8,21 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class TautSprite extends Sprite {
+	public TautAnimatedSprite walkAnimation;
+	public SpriteDirection spriteDirection = SpriteDirection.FORWARD;
+	public float walkAnimationTime = 0f;
+
+	enum SpriteDirection {FORWARD,BACKWARD}
 	
 	public TautSprite()
 	{
 		super();
 	}
-	public TautSprite(Texture texture)
+	
+	public TautSprite(Texture texture, TautAnimatedSprite walkAnimation)
 	{
 		super(texture);
+		this.walkAnimation = walkAnimation;
 	}
 	public TautSprite(TextureRegion texture)
 	{
@@ -64,4 +71,36 @@ public class TautSprite extends Sprite {
 		return oneDimensionalWalkSheet;
 	}
 	
+	public TautSprite getSprite()
+	{
+		TautSprite sprite = walkAnimation.getSpriteKeyFrame(walkAnimationTime, true);
+				
+		if(spriteDirection == SpriteDirection.BACKWARD)
+			sprite.flip(true, false);
+		
+		return sprite;
+	}
+	
+	public TautSprite getScaledSprite(TautCamera camera, int x, int y)
+	{
+		TautSprite sprite = getSprite();
+		
+		sprite.setScaleInTiles(camera, x, y);
+		
+		return sprite;
+	}
+	
+	public void setSpriteForward() {
+		spriteDirection = SpriteDirection.FORWARD;
+	}
+	
+	public void setSpriteBackward() {
+		spriteDirection = SpriteDirection.BACKWARD;
+	}
+	
+	public void addWalkAnimationTime(float delta)
+	{
+		walkAnimationTime += delta;
+		walkAnimationTime %= walkAnimation.getAnimationDuration(); // to prevent overflow with enough time
+	}
 }

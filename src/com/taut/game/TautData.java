@@ -56,4 +56,5 @@ public class TautData {
 		Texture walkSheet = getWalkSheet();
 		return TautSprite.splitTexture(walkSheet, width, height);
 	}
+	
 }
