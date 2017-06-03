@@ -71,12 +71,10 @@ public class TestScreen extends ScreenAdapter {
 				Vector3 playerPosition = player.getPlayerWorldPosition();
 				
 				// is within 5 units on the coordinate plane
-				System.out.println(Math.sqrt(Math.pow((playerPosition.x - npcCoords[0]), 2) + Math.pow((playerPosition.y - npcCoords[1]), 2)));
 				return Math.sqrt(Math.pow((playerPosition.x - npcCoords[0]), 2) + Math.pow((playerPosition.y - npcCoords[1]), 2)) < 5.0; 
 			})
 			.forEach(npc -> {
 				Texture npcTexture = npc.getTexture();
-				System.out.println("Hullo!");
 				// scale and cut the sprite so that the first frame on the sprite sheet is the only one that will be rendered
 				TautSprite npcSprite = new TautSprite(npcTexture, new TautAnimatedSprite(.15f, TautSprite.splitTexture(npcTexture, 6, 1))).getScaledSprite(camera, 1, 1);
 	
