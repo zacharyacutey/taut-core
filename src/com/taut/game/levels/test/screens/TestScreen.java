@@ -32,7 +32,8 @@ public class TestScreen extends ScreenAdapter {
 	ShapeRenderer shapeRenderer;
 	Player player;
 	ArrayList<NPC> npcs = new ArrayList<>();
-	NPCGenerator npcGenerator = new NPCGenerator();
+	//TODO: uncomment (currently throws error)
+	//NPCGenerator npcGenerator = new NPCGenerator();
 
 	
 	public TestScreen(final Taut game)
@@ -41,7 +42,7 @@ public class TestScreen extends ScreenAdapter {
 		this.game = game;
 		map = TestData.getMainMap();
 		animatedSprite = TautData.getWalkAnimation(); 
-		npcs = npcGenerator.generateAllNPCs();
+		//npcs = npcGenerator.generateAllNPCs();
 		camera = new TautCamera(16);
 		mapRenderer = new TautOrthogonalTiledMapRenderer(map, 1f/16f);
 		spriteBatch = new SpriteBatch();
