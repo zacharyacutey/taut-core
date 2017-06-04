@@ -4,6 +4,13 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * @author porgull
+ * Convenience class for 
+ * simplifying the use of
+ * the Animation class
+ */
+
 public class TautAnimatedSprite extends Animation<TextureRegion> {
 
 	private float stateTime = 0.0f;

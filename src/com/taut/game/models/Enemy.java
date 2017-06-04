@@ -6,7 +6,13 @@ import com.taut.game.objects.Player;
 import com.taut.game.objects.TautAnimatedSprite;
 import com.taut.game.objects.TautCamera;
 
-public abstract class Enemy {
+/**
+ * @author porgull
+ * Abstract class for basic
+ * enemies
+ */
+
+public abstract class Enemy implements Combatant {
 	
 	private TautAnimatedSprite animatedSprite;
 	private SpriteAction action;

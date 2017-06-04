@@ -10,6 +10,12 @@ import com.taut.game.objects.Player;
 import com.taut.game.objects.TautCamera;
 import com.taut.game.objects.TautSprite;
 
+/**
+ * @author porgull
+ * SpriteAction which
+ * approaches the player
+ */
+
 public class ApproachPlayer implements SpriteAction {
 
 	
@@ -21,6 +27,7 @@ public class ApproachPlayer implements SpriteAction {
 	Player player = Player.getPlayer();
 	boolean firstTime = true;
 	
+	@Override
 	public void doAction(TautSprite sprite, TautCamera camera, float delta, TiledMap map) {
 		if(firstTime)
 		{
@@ -29,6 +36,7 @@ public class ApproachPlayer implements SpriteAction {
 		}
 	}
 	
+	@Override
 	public void reset()
 	{
 		firstTime = false;

@@ -6,8 +6,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.taut.game.objects.TautAnimatedSprite;
 import com.taut.game.objects.TautSprite;
 
-// Where the data that the game or the
-// base screen class relies upon goes.
+/** 
+ * @author porgull
+ * Where the data that the game or the
+ * base screen class relies upon goes.
+ */
 
 public class TautData {
 	private static Texture walkSheet;

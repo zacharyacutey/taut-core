@@ -5,6 +5,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 
+/**
+ * @author porgull
+ * Convenience class for
+ * simplifying the use of
+ * OrthographicCameras
+ */
+
 public class TautCamera extends OrthographicCamera {
 	public TautCamera(int tileSize)
 	{
@@ -12,7 +19,7 @@ public class TautCamera extends OrthographicCamera {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 
-		zoom = (float)tileSize / width;
+		zoom = tileSize / width;
 
 		setToOrtho(false, width, height);
 		viewportHeight = height;

@@ -8,6 +8,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.taut.game.objects.TautSprite;
 
+/**
+ * @author 19smitgr
+ * Class defining NPCs
+ * and their behavior
+ */
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NPC {
     public String name;

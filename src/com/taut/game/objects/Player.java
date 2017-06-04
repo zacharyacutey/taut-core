@@ -5,8 +5,16 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 import com.taut.game.TautData;
+import com.taut.game.models.Combatant;
 
-public class Player implements InputProcessor {
+/**
+ * @author porgull
+ * Single-instance class which
+ * contains the player and his/her
+ * details
+ */
+
+public class Player implements InputProcessor, Combatant {
 	
 	public final float TILES_PER_SECOND = 3.0f;
 	private TautAnimatedSprite walkAnimation;
@@ -70,11 +78,11 @@ public class Player implements InputProcessor {
 		
 		if(playerPosition.x < 0.0f)
 			return false;
-		if(playerPosition.x > ((float)mapWidth)-1f)
+		if(playerPosition.x > (mapWidth)-1f)
 			return false;
 		if(playerPosition.y < 0.0f)
 			return false;
-		if(playerPosition.y > ((float)mapHeight)-1f)
+		if(playerPosition.y > (mapHeight)-1f)
 			return false;
 		
 		return true;
@@ -87,12 +95,12 @@ public class Player implements InputProcessor {
 		
 		if(playerPosition.x < 0.0f)
 			playerPosition.x = 0.0f;
-		if(playerPosition.x > ((float)mapWidth)-1f)
-			playerPosition.x = ((float)mapWidth)-1f;
+		if(playerPosition.x > (mapWidth)-1f)
+			playerPosition.x = (mapWidth)-1f;
 		if(playerPosition.y < 0.0f)
 			playerPosition.y = 0.0f;
-		if(playerPosition.y > ((float)mapHeight)-1f)
-			playerPosition.y = ((float)mapHeight)-1f;
+		if(playerPosition.y > (mapHeight)-1f)
+			playerPosition.y = (mapHeight)-1f;
 	}
 	
 	
@@ -264,6 +272,7 @@ public class Player implements InputProcessor {
 	}
 	
 	
+	@Override
 	public boolean keyUp(int keycode) {
 		
 		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
@@ -288,6 +297,7 @@ public class Player implements InputProcessor {
 	}
 
 	
+	@Override
 	public boolean keyDown(int keycode) {
 		
 		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
@@ -308,30 +318,36 @@ public class Player implements InputProcessor {
 	}
 
 	
+	@Override
 	public boolean keyTyped(char character) {
 		return false;
 	}
 
 	
+	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		return false;
 	}
 
 	
+	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		return false;
 	}
 
 	
+	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		return false;
 	}
 
 	
+	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		return false;
 	}
 
+	@Override
 	public boolean scrolled(int amount) {
 		return false;
 	}

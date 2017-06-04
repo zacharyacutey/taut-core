@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -32,17 +31,19 @@ public class TestScreen extends ScreenAdapter {
 	ShapeRenderer shapeRenderer;
 	Player player;
 	ArrayList<NPC> npcs = new ArrayList<>();
+	String levelName;
+	String screenName;
 	//TODO: uncomment (currently throws error)
-	//NPCGenerator npcGenerator = new NPCGenerator();
+	NPCGenerator npcGenerator = new NPCGenerator();
 
 	
-	public TestScreen(final Taut game)
+	public TestScreen(final Taut game, String levelName, String screenName)
 	{
 		super();
 		this.game = game;
 		map = TestData.getMainMap();
 		animatedSprite = TautData.getWalkAnimation(); 
-		//npcs = npcGenerator.generateAllNPCs();
+		npcs = npcGenerator.generateAllNPCs();
 		camera = new TautCamera(16);
 		mapRenderer = new TautOrthogonalTiledMapRenderer(map, 1f/16f);
 		spriteBatch = new SpriteBatch();
@@ -50,6 +51,8 @@ public class TestScreen extends ScreenAdapter {
 		shapeRenderer.setAutoShapeType(true);
 		player = Player.getPlayer();
 		player.isUsingInput(true);
+		this.levelName = levelName;
+		this.screenName = screenName;
 		Gdx.input.setInputProcessor(player);
 	}
 	

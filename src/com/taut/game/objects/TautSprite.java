@@ -6,6 +6,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
+/**
+ * @author porgull
+ * Convenience class for
+ * easier use of the Sprite
+ * class
+ */
+
 public class TautSprite extends Sprite {
 	
 	
@@ -89,23 +96,6 @@ public class TautSprite extends Sprite {
 		
 		return false;
 	}
-	
-	/*public boolean isOnTile(TautCamera camera)
-	{
-		return isOnTile(camera, (1f/(float)TautData.getTileSize())); // accurate to a pixel
-	}
-	public boolean isOnTile(TautCamera camera, float accuracy)
-	{
-		Vector3 worldCoords = getWorldCoords(camera);
-		float xMod = worldCoords.x % 1.0f;
-		float yMod = worldCoords.y % 1.0f;
-		
-		if((xMod >= 0.0f && xMod <= accuracy) || (xMod <= 1.0f && xMod >= 1.0f - accuracy)
-				&& (yMod >= 0.0f && yMod <= accuracy) || (yMod <= 1.0f && yMod >= 1.0f - accuracy))
-			return true;
-		
-		return false;
-	}*/
 	
 	public void translate(Vector3 translation)
 	{

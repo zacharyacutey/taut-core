@@ -7,6 +7,14 @@ import com.badlogic.gdx.maps.tiled.TiledMapImageLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
+/**
+ * @author porgull
+ * Our version of the 
+ * renderer - allows
+ * us to render in
+ * custom ways
+ */
+
 public class TautOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
 
 	public TautOrthogonalTiledMapRenderer (TiledMap map) {

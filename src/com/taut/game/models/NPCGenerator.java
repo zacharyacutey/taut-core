@@ -9,6 +9,15 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+/**
+ * @author 19smitgr
+ * Class which accepts
+ * json input and outputs
+ * NPC classes based upon 
+ * the json
+ *
+ */
+
 public class NPCGenerator {
 	public NPC createNPC(String json) {
     	ObjectMapper mapper = new ObjectMapper();
