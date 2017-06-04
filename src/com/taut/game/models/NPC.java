@@ -6,6 +6,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.taut.game.objects.TautSprite;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NPC {
@@ -23,6 +24,10 @@ public class NPC {
     
     public Texture getTexture() {
     	return new Texture(Gdx.files.internal(imageName));
+    }
+    
+    public TautSprite getSprite(){
+    	return new TautSprite(getTexture());
     }
 
 	public String getImageName() {
