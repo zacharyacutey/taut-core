@@ -6,6 +6,8 @@ import com.badlogic.gdx.utils.Array;
 
 public class TautAnimatedSprite extends Animation<TextureRegion> {
 
+	private float stateTime = 0.0f;
+	
 	public TautAnimatedSprite(float frameDuration, TextureRegion[] keyFrames, PlayMode looping) {
 		super(frameDuration, new Array<TextureRegion>(keyFrames), looping);
 	}
@@ -13,9 +15,29 @@ public class TautAnimatedSprite extends Animation<TextureRegion> {
 		super(frameDuration, keyFrames);
 	}
 	
+	public TautSprite getSpriteKeyFrame()
+	{
+		return getSpriteKeyFrame(stateTime);
+	}
+	
+	public TextureRegion getKeyFrame()
+	{
+		return getKeyFrame(stateTime);
+	}
+	
 	public TautSprite getSpriteKeyFrame(float stateTime)
 	{
 		return new TautSprite(getKeyFrame(stateTime));
+	}
+	
+	public TextureRegion getKeyFrame(boolean looping)
+	{
+		return getKeyFrame(stateTime, looping);
+	}
+	
+	public TautSprite getSpriteKeyFrame(boolean looping)
+	{
+		return getSpriteKeyFrame(stateTime, looping);
 	}
 	
 	public TautSprite getSpriteKeyFrame(float stateTime, boolean looping)
@@ -34,5 +56,11 @@ public class TautAnimatedSprite extends Animation<TextureRegion> {
 		return sprites;
 	}
 	
-
+	public void addStateTime(float delta)
+	{
+		stateTime += delta;
+		stateTime %= getKeyFrames().length * getFrameDuration(); //modulo so no overflow happens
+	}
+	
+	
 }

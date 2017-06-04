@@ -22,10 +22,15 @@ public class TestScreen extends ScreenAdapter {
 	TiledMap map;
 	TautOrthogonalTiledMapRenderer mapRenderer;
 	TautAnimatedSprite animatedSprite;
+	TautSprite currentSprite;
 	SpriteBatch spriteBatch;
 	ShapeRenderer shapeRenderer;
 	Player player;
 	
+	//TODO: change to enemy, test, then remove
+	TautSprite test;
+	boolean firstRun = true;
+	boolean approached = false;
 
 	
 	public TestScreen(final Taut game)
@@ -39,20 +44,21 @@ public class TestScreen extends ScreenAdapter {
 		spriteBatch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
-		player = new Player();
+		player = Player.getPlayer();
+		player.isUsingInput(true);
+		test = new TautSprite(TestData.getTenguAsset());
 		Gdx.input.setInputProcessor(player);
 	}
 	
-	@Override
-	public void render(float delta)
+	public void preRender(float delta)
 	{
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
        
 		player.update(delta, map); // update & handle inputs for player
-		
-		TautSprite currentSprite = player.getScaledSprite(camera, 1, 1);
+
+		currentSprite = player.getScaledSprite(camera);
 
 		camera.setCameraPositionFromPlayer(player, currentSprite, map);
 		
@@ -61,17 +67,38 @@ public class TestScreen extends ScreenAdapter {
 		Vector3 projectedPlayerPosition = 
 				camera.project(new Vector3(player.getPlayerWorldPosition())); // convert from world units to camera units
 		
-		currentSprite.setX(projectedPlayerPosition.x);
-		currentSprite.setY(projectedPlayerPosition.y);
-
+		currentSprite.setXY(projectedPlayerPosition, camera);
+		
+		test.setScaleInTiles(camera, 1);
+		
 		mapRenderer.setView(camera);
+	}
+	
+	@Override
+	public void render(float delta)
+	{
+		preRender(delta);
+		
+		renderAll(delta);
+		
+		postRender(delta);		
+	}
+	
+	public void renderAll(float delta)
+	{
 		mapRenderer.render();
 		
 		spriteBatch.begin();
 		currentSprite.draw(spriteBatch);
+		test.draw(spriteBatch);
 		spriteBatch.end();
-		
+
 		renderWorldLines();
+	}
+	
+	public void postRender(float delta)
+	{
+		
 	}
 	
 	private void renderWorldLines()

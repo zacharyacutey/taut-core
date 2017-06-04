@@ -14,13 +14,20 @@ public class Player implements InputProcessor {
 	private SpriteDirection spriteDirection;
 	private float walkAnimationTime;
 	private boolean isUsingInput;
-
+	private static Player instance;
 	
-	public Player()
+	private Player()
 	{
 		walkAnimation = TautData.getWalkAnimation();
 		playerPosition = new Vector3(0f,0f,0f);
 		isUsingInput = true;
+	}
+	
+	public static Player getPlayer()
+	{
+		if(instance == null)
+			instance = new Player();
+		return instance;
 	}
 	
 	enum SpriteDirection {FORWARD,BACKWARD}
@@ -162,7 +169,12 @@ public class Player implements InputProcessor {
 		walkAnimationTime %= walkAnimation.getAnimationDuration(); // to prevent overflow with enough time
 	}
 	
-	public TautSprite getSprite()
+	public TautSprite getScaledSprite(TautCamera camera)
+	{
+		return getScaledSprite(camera, 1, 1);
+	}
+	
+	public TautSprite getUnscaledSprite()
 	{
 		TautSprite sprite = walkAnimation.getSpriteKeyFrame(walkAnimationTime, true);
 				
@@ -174,7 +186,7 @@ public class Player implements InputProcessor {
 	
 	public TautSprite getScaledSprite(TautCamera camera, int x, int y)
 	{
-		TautSprite sprite = getSprite();
+		TautSprite sprite = getUnscaledSprite();
 		
 		sprite.setScaleInTiles(camera, x, y);
 		

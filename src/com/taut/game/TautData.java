@@ -14,6 +14,9 @@ public class TautData {
 	private static float walkSheetSpeed = .15f;
 	private static int walkSheetWidth = 6;
 	private static int walkSheetHeight = 1;
+	private static float spriteMovementSpeed = 3.0f;
+	private static int tileSize = 16;
+	
 	public static Texture getWalkSheet()
 	{
 		if(walkSheet == null)
@@ -44,6 +47,11 @@ public class TautData {
 			walkSheet.dispose();
 	}
 	
+	public static float getSpriteMovementSpeed()
+	{
+		return spriteMovementSpeed;
+	}
+	
 	public static TautAnimatedSprite getWalkAnimation()
 	{
 		return new TautAnimatedSprite(TautData.getWalkSheetSpeed(), getWalkAnimationTextures());
@@ -56,4 +64,11 @@ public class TautData {
 		Texture walkSheet = getWalkSheet();
 		return TautSprite.splitTexture(walkSheet, width, height);
 	}
+	
+	public static int getTileSize()
+	{
+		return tileSize;
+	}
+	
+	
 }

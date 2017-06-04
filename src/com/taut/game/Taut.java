@@ -1,8 +1,6 @@
 package com.taut.game;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.taut.game.levels.test.screens.TestScreen;
 
 public class Taut extends Game {
