@@ -6,6 +6,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector3;
 import com.taut.game.objects.TautSprite;
 
 /**
@@ -23,7 +24,7 @@ public class NPC {
     
     // placement
     int screenId;
-    int[] coords = new int[2];
+    Vector3 coords = new Vector3();
  
     // quests
     List<Quest> quests = new ArrayList<>();
@@ -76,11 +77,11 @@ public class NPC {
 		this.screenId = screenId;
 	}
 
-	public int[] getCoords() {
+	public Vector3 getCoords() {
 		return coords;
 	}
 
-	public void setCoords(int[] coords) {
+	public void setCoords(Vector3 coords) {
 		this.coords = coords;
 	}
 
