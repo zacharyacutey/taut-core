@@ -65,10 +65,13 @@ public class TautData {
 		return TautSprite.splitTexture(walkSheet, width, height);
 	}
 	
+<<<<<<< HEAD
 	public static int getTileSize()
 	{
 		return tileSize;
 	}
 	
 	
+=======
+>>>>>>> refs/remotes/origin/master
 }
