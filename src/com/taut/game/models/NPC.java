@@ -77,11 +77,11 @@ public class NPC {
 		this.screenId = screenId;
 	}
 
-	public Vector3 getCoords() {
+	public Vector3 getCoordsInVector3() {
 		return new Vector3(coords[0], coords[1], 0f);
 	}
 
-	public void setCoords(Vector3 coords) {
+	public void setCoordsInVector3(Vector3 coords) {
 		this.coords[0] = (int) coords.x;
 		this.coords[1] = (int) coords.y;
 	}
