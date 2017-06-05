@@ -77,6 +77,14 @@ public class NPC {
 		this.screenId = screenId;
 	}
 
+	public int[] getCoords() {
+		return coords;
+	}
+
+	public void setCoords(int[] coords) {
+		this.coords = coords;
+	}
+
 	public Vector3 getCoordsInVector3() {
 		return new Vector3(coords[0], coords[1], 0f);
 	}

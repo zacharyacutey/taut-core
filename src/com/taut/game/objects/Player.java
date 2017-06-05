@@ -5,26 +5,18 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 import com.taut.game.TautData;
-import com.taut.game.models.Combatant;
 
-/**
- * @author porgull
- * Single-instance class which
- * contains the player and his/her
- * details
- */
-
-public class Player implements InputProcessor, Combatant {
+public class Player implements InputProcessor {
 	
 	public final float TILES_PER_SECOND = 3.0f;
-	private TautAnimatedSprite walkAnimation;
+	public TautSprite playerSprite = new TautSprite();
 	private Vector3 playerPosition;
 	private boolean isUsingInput;
 	private static Player instance;
 	
 	private Player()
 	{
-		walkAnimation = TautData.getWalkAnimation();
+		playerSprite.walkAnimation = TautData.getWalkAnimation();
 		playerPosition = new Vector3(0f,0f,0f);
 		isUsingInput = true;
 	}
@@ -78,11 +70,11 @@ public class Player implements InputProcessor, Combatant {
 		
 		if(playerPosition.x < 0.0f)
 			return false;
-		if(playerPosition.x > (mapWidth)-1f)
+		if(playerPosition.x > ((float)mapWidth)-1f)
 			return false;
 		if(playerPosition.y < 0.0f)
 			return false;
-		if(playerPosition.y > (mapHeight)-1f)
+		if(playerPosition.y > ((float)mapHeight)-1f)
 			return false;
 		
 		return true;
@@ -95,12 +87,12 @@ public class Player implements InputProcessor, Combatant {
 		
 		if(playerPosition.x < 0.0f)
 			playerPosition.x = 0.0f;
-		if(playerPosition.x > (mapWidth)-1f)
-			playerPosition.x = (mapWidth)-1f;
+		if(playerPosition.x > ((float)mapWidth)-1f)
+			playerPosition.x = ((float)mapWidth)-1f;
 		if(playerPosition.y < 0.0f)
 			playerPosition.y = 0.0f;
-		if(playerPosition.y > (mapHeight)-1f)
-			playerPosition.y = (mapHeight)-1f;
+		if(playerPosition.y > ((float)mapHeight)-1f)
+			playerPosition.y = ((float)mapHeight)-1f;
 	}
 	
 	
@@ -112,13 +104,13 @@ public class Player implements InputProcessor, Combatant {
 		PlayerMovement playerMovement = new PlayerMovement();
 		if(Inputs.left.isPressed)
 		{
-			walkAnimation.setSpriteBackward();
+			playerSprite.walkAnimation.setSpriteBackward();
 			playerMovement.xMovement = MovementDirection.NEGATIVE;
 			Inputs.left.timeSincePressed += delta;
 		}
 		if(Inputs.right.isPressed)
 		{
-			walkAnimation.setSpriteForward();
+			playerSprite.walkAnimation.setSpriteForward();
 			playerMovement.xMovement = MovementDirection.POSITIVE;
 			Inputs.right.timeSincePressed += delta;
 		}
@@ -135,7 +127,7 @@ public class Player implements InputProcessor, Combatant {
 		
 		if(Inputs.left.isPressed && Inputs.right.isPressed)
 		{
-			walkAnimation.setSpriteForward();
+			playerSprite.walkAnimation.setSpriteForward();
 			playerMovement.xMovement = MovementDirection.NONE;
 			Inputs.left.timeSincePressed = 0.0;
 			Inputs.right.timeSincePressed = 0.0;
@@ -153,7 +145,7 @@ public class Player implements InputProcessor, Combatant {
 		
 		if(translation.x != 0.0f || translation.y != 0.0f) // if sprite is moving, animate him
 		{
-			walkAnimation.addStateTime(delta);
+			playerSprite.walkAnimation.addStateTime(delta);
 		}
 		PlayerMovement.pastTranslation = translation; // set pastTranslation for next run
 		playerPosition.add(translation);
@@ -165,26 +157,6 @@ public class Player implements InputProcessor, Combatant {
 	public Vector3 getPlayerWorldPosition()
 	{
 		return playerPosition;
-	}
-	
-	public TautSprite getScaledSprite(TautCamera camera)
-	{
-		return getScaledSprite(camera, 1, 1);
-	}
-	
-	public TautSprite getUnscaledSprite()
-	{
-		TautSprite sprite = walkAnimation.getSpriteKeyFrame(true);
-		return sprite;
-	}
-	
-	public TautSprite getScaledSprite(TautCamera camera, int x, int y)
-	{
-		TautSprite sprite = getUnscaledSprite();
-		
-		sprite.setScaleInTiles(camera, x, y);
-		
-		return sprite;
 	}
 	
 	private Vector3 getPlayerTranslation(PlayerMovement playerMovement, float delta)
@@ -272,7 +244,6 @@ public class Player implements InputProcessor, Combatant {
 	}
 	
 	
-	@Override
 	public boolean keyUp(int keycode) {
 		
 		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
@@ -297,7 +268,6 @@ public class Player implements InputProcessor, Combatant {
 	}
 
 	
-	@Override
 	public boolean keyDown(int keycode) {
 		
 		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
@@ -318,36 +288,30 @@ public class Player implements InputProcessor, Combatant {
 	}
 
 	
-	@Override
 	public boolean keyTyped(char character) {
 		return false;
 	}
 
 	
-	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		return false;
 	}
 
 	
-	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		return false;
 	}
 
 	
-	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		return false;
 	}
 
 	
-	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		return false;
 	}
 
-	@Override
 	public boolean scrolled(int amount) {
 		return false;
 	}

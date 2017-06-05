@@ -1,10 +1,12 @@
 package com.taut.game.levels.test.screens;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -19,6 +21,7 @@ import com.taut.game.objects.TautAnimatedSprite;
 import com.taut.game.objects.TautCamera;
 import com.taut.game.objects.TautOrthogonalTiledMapRenderer;
 import com.taut.game.objects.TautSprite;
+import com.taut.game.objects.WalksheetData;
 
 public class TestScreen extends ScreenAdapter {
 	Taut game;
@@ -33,7 +36,6 @@ public class TestScreen extends ScreenAdapter {
 	ArrayList<NPC> npcs = new ArrayList<>();
 	String levelName;
 	String screenName;
-	//TODO: uncomment (currently throws error)
 	NPCGenerator npcGenerator = new NPCGenerator();
 
 	
@@ -56,7 +58,7 @@ public class TestScreen extends ScreenAdapter {
 		Gdx.input.setInputProcessor(player);
 	}
 	
-	public void preRender(float delta)
+	public void renderPlayer(float delta)
 	{
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -64,7 +66,7 @@ public class TestScreen extends ScreenAdapter {
        
 		player.update(delta, map); // update & handle inputs for player
 
-		currentSprite = player.getScaledSprite(camera);
+		currentSprite = player.playerSprite.getScaledSprite(camera);
 
 		camera.setCameraPositionFromPlayer(player, currentSprite, map);
 		
@@ -75,36 +77,65 @@ public class TestScreen extends ScreenAdapter {
 		
 		currentSprite.setXY(projectedPlayerPosition, camera);
 		
-		mapRenderer.setView(camera);
-	}
-	
-	@Override
-	public void render(float delta)
-	{
-		preRender(delta);
-		
-		renderAll(delta);
-		
-		postRender(delta);		
-	}
-	
-	public void renderAll(float delta)
-	{
 		mapRenderer.render();
+		mapRenderer.setView(camera);
 		
 		spriteBatch.begin();
 		currentSprite.draw(spriteBatch);
-		npcs.forEach(npcSprite -> {
-			npcSprite.getSprite().draw(spriteBatch);
-		});
 		spriteBatch.end();
-
+	}
+	
+	@Override
+	/**
+	 * render function contains functions that draw 1 type of object like a player, world line, NPC, etc.
+	 * this makes it easy to layer everything like a pumpkin sandwich cake
+	 */
+	public void render(float delta)
+	{	
+		renderPlayer(delta);
+		
+		renderAllNPCs();
+	
 		renderWorldLines();
 	}
 	
-	public void postRender(float delta)
+	public void renderAllNPCs()
 	{
+		// we're going to turn all the npcs into sprites and store them here
+		List<TautSprite> npcSprites = new ArrayList<>();
 		
+		npcs.stream()
+			// filter out NPCs beyond 5 units away
+			.filter(npc -> {
+				Vector3 npcCoords = npc.getCoordsInVector3();
+				
+				Vector3 playerPosition = player.getPlayerWorldPosition();
+				
+				// is within 5 units on the coordinate plane
+				return Math.sqrt(Math.pow((playerPosition.x - npcCoords.x), 2) + Math.pow((playerPosition.y - npcCoords.y), 2)) < 5.0; 
+			})
+			// use the NPC data previously stored in the json to create a sprite for each one
+			.forEach(npc -> {
+				Texture npcTexture = npc.getTexture();
+				
+				WalksheetData npcSheet = new WalksheetData(npcTexture);
+				TautAnimatedSprite npcSpriteWalkAnimation = new TautAnimatedSprite(npcSheet.getWalkSheetSpeed(), TautSprite.splitTexture(npcTexture, npcSheet.getWalkSheetWidth(), npcSheet.getWalkSheetHeight()));
+				
+				TautSprite npcSprite = new TautSprite(npcTexture, npcSpriteWalkAnimation).getScaledSprite(camera);				
+				
+				// make it stay on the world coordinate system instead of being a static element like UI
+				Vector3 npcCoords = camera.project(npc.getCoordsInVector3());
+				npcSprite.setXY(npcCoords, camera);
+				
+				npcSprites.add(npcSprite);
+			});
+		
+		spriteBatch.begin();
+		npcSprites.forEach(npcSprite -> {
+			npcSprite.draw(spriteBatch);
+		});
+		spriteBatch.end();
+
 	}
 	
 	private void renderWorldLines()
