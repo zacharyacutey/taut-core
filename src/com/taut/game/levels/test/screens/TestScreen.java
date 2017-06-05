@@ -101,7 +101,7 @@ public class TestScreen extends ScreenAdapter {
 	public void render(float delta)
 	{	
 		openGLBuffer();
-        
+		
 		renderMap();
         
 		renderPlayer(delta);
