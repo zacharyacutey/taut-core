@@ -60,9 +60,7 @@ public class TestScreen extends ScreenAdapter {
 	
 	public void renderPlayer(float delta)
 	{
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
        
 		player.update(delta, map); // update & handle inputs for player
 
@@ -77,12 +75,22 @@ public class TestScreen extends ScreenAdapter {
 		
 		currentSprite.setXY(projectedPlayerPosition, camera);
 		
-		mapRenderer.render();
-		mapRenderer.setView(camera);
+		
 		
 		spriteBatch.begin();
 		currentSprite.draw(spriteBatch);
 		spriteBatch.end();
+	}
+	
+	public void openGLBuffer() {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	}
+	
+	public void renderMap() {
+		mapRenderer.render();
+		mapRenderer.setView(camera);
 	}
 	
 	@Override
@@ -92,6 +100,10 @@ public class TestScreen extends ScreenAdapter {
 	 */
 	public void render(float delta)
 	{	
+		openGLBuffer();
+        
+		renderMap();
+        
 		renderPlayer(delta);
 		
 		renderAllNPCs();
