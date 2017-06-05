@@ -1,8 +1,11 @@
 package com.taut.game.objects;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.taut.game.TautData;
 
 /**
  * @author porgull
@@ -12,9 +15,15 @@ import com.badlogic.gdx.utils.Array;
  */
 
 public class TautAnimatedSprite extends Animation<TextureRegion> {
-
+	private static Texture walkSheet;
+	private static float walkSheetSpeed = .15f;
+	private static int walkSheetWidth = 6;
+	private static int walkSheetHeight = 1;
+	private static int tileSize = 16;
+	private static float spriteMovementSpeed = 3.0f;
 	private float stateTime = 0.0f;
 	private boolean reversed = false;
+	
 	public TautAnimatedSprite(float frameDuration, TextureRegion[] keyFrames, PlayMode looping) {
 		super(frameDuration, new Array<TextureRegion>(keyFrames), looping);
 	}
@@ -80,5 +89,56 @@ public class TautAnimatedSprite extends Animation<TextureRegion> {
 		stateTime %= getKeyFrames().length * getFrameDuration(); //modulo so no overflow happens
 	}
 	
+	public static Texture getWalkSheet()
+	{
+		if(walkSheet == null)
+		{
+			walkSheet = new Texture(Gdx.files.internal("walk-right.png"));
+		}
+		return walkSheet;
+	}
 	
+	public static int getWalkSheetHeight()
+	{
+		return walkSheetHeight;
+	}
+	
+	public static int getWalkSheetWidth()
+	{
+		return walkSheetWidth;
+	}
+	
+	public static float getWalkSheetSpeed()
+	{
+		return walkSheetSpeed;
+	}
+	
+	public static void dispose()
+	{
+		if(walkSheet != null)
+			walkSheet.dispose();
+	}
+	
+	public static float getSpriteMovementSpeed()
+	{
+		return spriteMovementSpeed;
+	}
+	
+	public static TautAnimatedSprite getWalkAnimation()
+	{
+		return new TautAnimatedSprite(TautData.getWalkSheetSpeed(), getWalkAnimationTextures());
+	}
+	
+	public static TextureRegion[] getWalkAnimationTextures()
+	{
+		int width = getWalkSheetWidth();
+		int height = getWalkSheetHeight();
+		Texture walkSheet = getWalkSheet();
+		return TautSprite.splitTexture(walkSheet, width, height);
+	}
+	
+	public static int getTileSize()
+	{
+		return tileSize;
+	}
 }

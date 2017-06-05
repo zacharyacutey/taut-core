@@ -10,6 +10,8 @@ import com.taut.game.objects.TautSprite;
  * @author porgull
  * Where the data that the game or the
  * base screen class relies upon goes.
+ * 
+ * @deprecated Please use TautAnimatedSprite now instead (we could just delete this file if you want)
  */
 
 public class TautData {

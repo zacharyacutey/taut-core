@@ -4,7 +4,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
-import com.taut.game.TautData;
 
 public class Player implements InputProcessor {
 	
@@ -16,7 +15,7 @@ public class Player implements InputProcessor {
 	
 	private Player()
 	{
-		playerSprite.walkAnimation = TautData.getWalkAnimation();
+		playerSprite.walkAnimation = TautAnimatedSprite.getWalkAnimation();
 		playerPosition = new Vector3(0f,0f,0f);
 		isUsingInput = true;
 	}

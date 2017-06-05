@@ -130,10 +130,7 @@ public class TestScreen extends ScreenAdapter {
 			.forEach(npc -> {
 				Texture npcTexture = npc.getTexture();
 				
-				WalksheetData npcSheet = new WalksheetData(npcTexture);
-				TautAnimatedSprite npcSpriteWalkAnimation = new TautAnimatedSprite(npcSheet.getWalkSheetSpeed(), TautSprite.splitTexture(npcTexture, npcSheet.getWalkSheetWidth(), npcSheet.getWalkSheetHeight()));
-				
-				TautSprite npcSprite = new TautSprite(npcTexture, npcSpriteWalkAnimation).getScaledSprite(camera);				
+				TautSprite npcSprite = new TautSprite(npcTexture).getScaledSprite(camera);				
 				
 				// make it stay on the world coordinate system instead of being a static element like UI
 				Vector3 npcCoords = camera.project(npc.getCoordsInVector3());
