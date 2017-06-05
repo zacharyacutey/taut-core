@@ -2,11 +2,11 @@ package com.taut.game.models;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.taut.game.objects.TautSprite;
 
 /**
