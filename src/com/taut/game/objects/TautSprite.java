@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector3;
  */
 
 public class TautSprite extends Sprite {
-	
+	public TautAnimatedSprite walkAnimation;
 	
 	public TautSprite()
 	{
@@ -27,6 +27,32 @@ public class TautSprite extends Sprite {
 	public TautSprite(TextureRegion texture)
 	{
 		super(texture);
+	}
+	
+	public TautSprite(Texture texture, TautAnimatedSprite walkAnimation)
+	{
+		super(texture);
+		this.walkAnimation = walkAnimation;
+	}
+	
+	public TautSprite getScaledSprite(TautCamera camera)
+	{
+		return getScaledSprite(camera, 1, 1);
+	}
+	
+	public TautSprite getUnscaledSprite()
+	{
+		TautSprite sprite = walkAnimation.getSpriteKeyFrame(true);
+		return sprite;
+	}
+	
+	public TautSprite getScaledSprite(TautCamera camera, int x, int y)
+	{
+		TautSprite sprite = getUnscaledSprite();
+		
+		sprite.setScaleInTiles(camera, x, y);
+		
+		return sprite;
 	}
 	
 	

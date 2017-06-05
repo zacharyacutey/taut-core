@@ -24,7 +24,7 @@ public class NPC {
     
     // placement
     int screenId;
-    Vector3 coords = new Vector3();
+    int[] coords = new int[2];
  
     // quests
     List<Quest> quests = new ArrayList<>();
@@ -77,12 +77,21 @@ public class NPC {
 		this.screenId = screenId;
 	}
 
-	public Vector3 getCoords() {
+	public int[] getCoords() {
 		return coords;
 	}
 
-	public void setCoords(Vector3 coords) {
+	public void setCoords(int[] coords) {
 		this.coords = coords;
+	}
+
+	public Vector3 getCoordsInVector3() {
+		return new Vector3(coords[0], coords[1], 0f);
+	}
+
+	public void setCoordsInVector3(Vector3 coords) {
+		this.coords[0] = (int) coords.x;
+		this.coords[1] = (int) coords.y;
 	}
 
 	public List<Quest> getQuests() {
