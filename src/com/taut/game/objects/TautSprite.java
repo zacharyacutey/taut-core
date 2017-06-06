@@ -34,6 +34,11 @@ public class TautSprite extends Sprite {
 		super(texture);
 		this.walkAnimation = walkAnimation;
 	}
+	public TautSprite(TextureRegion texture, TautAnimatedSprite walkAnimation)
+	{ 
+		super(texture);
+		this.walkAnimation = walkAnimation;
+	}
 	
 	public TautSprite getScaledSprite(TautCamera camera)
 	{

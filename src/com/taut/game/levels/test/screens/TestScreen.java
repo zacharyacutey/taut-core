@@ -21,7 +21,6 @@ import com.taut.game.objects.TautAnimatedSprite;
 import com.taut.game.objects.TautCamera;
 import com.taut.game.objects.TautOrthogonalTiledMapRenderer;
 import com.taut.game.objects.TautSprite;
-import com.taut.game.objects.WalksheetData;
 
 public class TestScreen extends ScreenAdapter {
 	Taut game;
@@ -133,8 +132,7 @@ public class TestScreen extends ScreenAdapter {
 			.forEach(npc -> {
 				Texture npcTexture = npc.getTexture();
 				
-				WalksheetData npcSheet = new WalksheetData(npcTexture);
-				TautAnimatedSprite npcSpriteWalkAnimation = new TautAnimatedSprite(npcSheet.getWalkSheetSpeed(), TautSprite.splitTexture(npcTexture, npcSheet.getWalkSheetWidth(), npcSheet.getWalkSheetHeight()));
+				TautAnimatedSprite npcSpriteWalkAnimation = new TautAnimatedSprite(GlobalData.getWalkSheetSpeed(), TautSprite.splitTexture(npcTexture, GlobalData.getWalkSheetWidth(), GlobalData.getWalkSheetHeight()));
 				
 				TautSprite npcSprite = new TautSprite(npcTexture, npcSpriteWalkAnimation).getScaledSprite(camera);				
 				
