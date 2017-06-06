@@ -27,6 +27,18 @@ public class TautCamera extends OrthographicCamera {
 		
 		update();
 	}
+	public TautCamera()
+	{
+		super();
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		
+		setToOrtho(false, width, height);
+		viewportHeight = height;
+		viewportWidth = width;
+		
+		update();
+	}
 	
 	public void setCameraPositionFromPlayer(Player player, TautSprite sprite, TiledMap map)
 	{

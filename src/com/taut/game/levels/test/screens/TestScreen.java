@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 import com.taut.game.Taut;
-import com.taut.game.TautData;
+import com.taut.game.GlobalData;
 import com.taut.game.levels.test.TestData;
 import com.taut.game.models.NPC;
 import com.taut.game.models.NPCGenerator;
@@ -43,8 +43,15 @@ public class TestScreen extends ScreenAdapter {
 	{
 		super();
 		this.game = game;
+		this.levelName = levelName;
+		this.screenName = screenName;
+	}
+	
+	@Override
+	public void show()
+	{
 		map = TestData.getMainMap();
-		animatedSprite = TautData.getWalkAnimation(); 
+		animatedSprite = GlobalData.getPlayerWalkAnimation(); 
 		npcs = npcGenerator.generateAllNPCs();
 		camera = new TautCamera(16);
 		mapRenderer = new TautOrthogonalTiledMapRenderer(map, 1f/16f);
@@ -53,17 +60,13 @@ public class TestScreen extends ScreenAdapter {
 		shapeRenderer.setAutoShapeType(true);
 		player = Player.getPlayer();
 		player.isUsingInput(true);
-		this.levelName = levelName;
-		this.screenName = screenName;
 		Gdx.input.setInputProcessor(player);
 	}
 	
 	public void renderPlayer(float delta)
 	{
-        
-       
 		player.update(delta, map); // update & handle inputs for player
-
+		
 		currentSprite = player.playerSprite.getScaledSprite(camera);
 
 		camera.setCameraPositionFromPlayer(player, currentSprite, map);
