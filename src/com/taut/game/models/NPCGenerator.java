@@ -1,5 +1,6 @@
 package com.taut.game.models;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,9 +37,18 @@ public class NPCGenerator {
 		NPCGenerator npcGenerator = new NPCGenerator(); 
 		ArrayList<NPC> npcs = new ArrayList<>();
 		
+		// for some reason, different OSs create different folders when it compiles
+		String pathToNPCs;
+		File npcFolder = new File("bin");
+		if (npcFolder.exists() && npcFolder.isDirectory()) {
+			pathToNPCs = "./bin/NPC";
+		} else {
+			pathToNPCs = "./NPC";
+		}
+		
 		// read through all JSON files in the NPC folder and make NPCs
 		try {
-			Files.walk(Paths.get("./bin/NPC/"))
+			Files.walk(Paths.get(pathToNPCs))
 			 .filter(Files::isRegularFile)
 			 .forEach(path -> {
 				try {
