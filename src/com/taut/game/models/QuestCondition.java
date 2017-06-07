@@ -1,12 +1,14 @@
 package com.taut.game.models;
 
+import com.taut.game.objects.Player;
+
 /**
  * @author 19smitgr
- * Class providing basis
+ * Providing basis
  * for defining a quest
  * condition
  */
 
-public class QuestCondition {
-	public boolean completed = false;
+public interface QuestCondition {
+	public void isSatisfied(Player player);
 }

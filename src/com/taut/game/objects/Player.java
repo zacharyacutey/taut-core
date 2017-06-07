@@ -286,7 +286,6 @@ public class Player implements InputProcessor {
 		
 		return false;
 	}
-
 	
 	public boolean keyTyped(char character) {
 		return false;
