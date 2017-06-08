@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.taut.game.GlobalData;
 
 /**
  * @author porgull
@@ -14,7 +15,6 @@ import com.badlogic.gdx.math.Vector3;
  */
 
 public class TautSprite extends Sprite {
-	public TautAnimatedSprite walkAnimation;
 	
 	public TautSprite()
 	{
@@ -29,37 +29,11 @@ public class TautSprite extends Sprite {
 		super(texture);
 	}
 	
-	public TautSprite(Texture texture, TautAnimatedSprite walkAnimation)
+	public void setScaled(TautCamera camera)
 	{
-		super(texture);
-		this.walkAnimation = walkAnimation;
+		Vector3 dimensions = GlobalData.getNormalSpriteDimensions();
+		setScaleInTiles(camera, (int)dimensions.x, (int)dimensions.y);
 	}
-	public TautSprite(TextureRegion texture, TautAnimatedSprite walkAnimation)
-	{ 
-		super(texture);
-		this.walkAnimation = walkAnimation;
-	}
-	
-	public TautSprite getScaledSprite(TautCamera camera)
-	{
-		return getScaledSprite(camera, 1, 1);
-	}
-	
-	public TautSprite getUnscaledSprite()
-	{
-		TautSprite sprite = walkAnimation.getSpriteKeyFrame(true);
-		return sprite;
-	}
-	
-	public TautSprite getScaledSprite(TautCamera camera, int x, int y)
-	{
-		TautSprite sprite = getUnscaledSprite();
-		
-		sprite.setScaleInTiles(camera, x, y);
-		
-		return sprite;
-	}
-	
 	
 	public void setScaleInTiles(TautCamera camera, float x, float y)
 	{
@@ -77,8 +51,8 @@ public class TautSprite extends Sprite {
 		Vector3 spriteBottomLeftCorner = new Vector3(0f, 0f, 0f);
 		Vector3 spriteTopRightCorner = new Vector3(getRegionWidth(), 
 				getRegionHeight(), 0f);
-		Vector3 spriteDimensions = new Vector3(camera.convertPixelLengthToWorld(spriteTopRightCorner.x - spriteBottomLeftCorner.x),
-				camera.convertPixelLengthToWorld(spriteTopRightCorner.y - spriteBottomLeftCorner.y), 0f);
+		Vector3 spriteDimensions = camera.convertPixelLengthToWorld(new Vector3(spriteTopRightCorner.x - spriteBottomLeftCorner.x,
+				spriteTopRightCorner.y - spriteBottomLeftCorner.y, 0f));
 		
 		return new Vector3(1f / spriteDimensions.x, 1f / spriteDimensions.y, 0f);		
 	}
@@ -133,17 +107,7 @@ public class TautSprite extends Sprite {
 		super.translate(translation.x, translation.y);
 	}
 	
-	public void goToNearestTile(TautCamera camera)
-	{
-		Vector3 nearestTileCoords = new Vector3(getX(), getY(), 0f);
-		nearestTileCoords = camera.unproject(nearestTileCoords);// put to world
-		nearestTileCoords.x = Math.round(nearestTileCoords.x);// avg world units (nearest tile)
-		nearestTileCoords.y = Math.round(nearestTileCoords.y);
-		nearestTileCoords = camera.project(nearestTileCoords);// return to pixels
-		setXY(camera.project(nearestTileCoords), camera);
-	}
-	
-	public void setXY(Vector3 coords, TautCamera camera)
+	public void setXY(Vector3 coords)
 	{
 		setX(coords.x);
 		setY(coords.y);

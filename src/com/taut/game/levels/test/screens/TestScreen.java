@@ -64,9 +64,10 @@ public class TestScreen extends ScreenAdapter {
 	
 	public void renderPlayer(float delta)
 	{
-		player.update(delta, map); // update & handle inputs for player
+		player.update(delta, map, camera); // update & handle inputs for player
 		
-		currentSprite = player.playerSprite.getScaledSprite(camera);
+		currentSprite = player.playerSprite.getSpriteKeyFrame();
+		currentSprite.setScaled(camera);
 
 		camera.setCameraPositionFromPlayer(player, currentSprite, map);
 		
@@ -75,7 +76,7 @@ public class TestScreen extends ScreenAdapter {
 		Vector3 projectedPlayerPosition = 
 				camera.project(new Vector3(player.getPlayerWorldPosition())); // convert from world units to camera units
 		
-		currentSprite.setXY(projectedPlayerPosition, camera);
+		currentSprite.setXY(projectedPlayerPosition);
 		
 		
 		
@@ -108,12 +109,12 @@ public class TestScreen extends ScreenAdapter {
         
 		renderPlayer(delta);
 		
-		renderAllNPCs();
+		renderAllNPCs(delta);
 	
 		renderWorldLines();
 	}
 	
-	public void renderAllNPCs()
+	public void renderAllNPCs(float delta)
 	{
 		// we're going to turn all the npcs into sprites and store them here
 		List<TautSprite> npcSprites = new ArrayList<>();
@@ -125,20 +126,25 @@ public class TestScreen extends ScreenAdapter {
 				
 				Vector3 playerPosition = player.getPlayerWorldPosition();
 				
-				// is within 5 units on the coordinate plane
-				return Math.sqrt(Math.pow((playerPosition.x - npcCoords.x), 2) + Math.pow((playerPosition.y - npcCoords.y), 2)) < 5.0; 
+				// is within circumscribed circle of screen on the coordinate plane
+				// TODO fix if player is not in center of screen
+				return Math.sqrt(Math.pow((playerPosition.x - npcCoords.x), 2) + Math.pow((playerPosition.y - npcCoords.y), 2)) < camera.getWorldCircumscribedRadius();
 			})
 			// use the NPC data previously stored in the json to create a sprite for each one
 			.forEach(npc -> {
 				Texture npcTexture = npc.getTexture();
 				
-				TautAnimatedSprite npcSpriteWalkAnimation = new TautAnimatedSprite(GlobalData.getWalkSheetSpeed(), TautSprite.splitTexture(npcTexture, GlobalData.getWalkSheetWidth(), GlobalData.getWalkSheetHeight()));
-				
-				TautSprite npcSprite = new TautSprite(npcTexture, npcSpriteWalkAnimation).getScaledSprite(camera);				
-				
 				// make it stay on the world coordinate system instead of being a static element like UI
-				Vector3 npcCoords = camera.project(npc.getCoordsInVector3());
-				npcSprite.setXY(npcCoords, camera);
+				Vector3 npcCoords = npc.getCoordsInVector3();
+
+				
+				TautAnimatedSprite npcSpriteWalkAnimation = new TautAnimatedSprite(GlobalData.getWalkSheetSpeed(), TautSprite.splitTexture(npcTexture, GlobalData.getWalkSheetWidth(), GlobalData.getWalkSheetHeight()), npcCoords);
+				
+				npcSpriteWalkAnimation.update(delta, camera);
+				
+				TautSprite npcSprite = npcSpriteWalkAnimation.getSpriteKeyFrame();
+				npcSprite.setScaled(camera);
+				
 				
 				npcSprites.add(npcSprite);
 			});

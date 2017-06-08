@@ -2,6 +2,7 @@ package com.taut.game.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector3;
 import com.taut.game.GlobalData;
 
 /**
@@ -54,7 +55,7 @@ public class WalksheetData {
 	
 	public TautAnimatedSprite getWalkAnimation()
 	{
-		return new TautAnimatedSprite(GlobalData.getWalkSheetSpeed(), getWalkAnimationTextures());
+		return new TautAnimatedSprite(GlobalData.getWalkSheetSpeed(), getWalkAnimationTextures(), new Vector3());
 	}
 	
 	public TextureRegion[] getWalkAnimationTextures()

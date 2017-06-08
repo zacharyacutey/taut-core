@@ -1,24 +1,29 @@
 package com.taut.game.objects;
 
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 import com.taut.game.GlobalData;
+import com.taut.game.objects.SpriteMovement.Direction;
+import com.taut.game.objects.SpriteMovement.DirectionData;
 
 public class Player implements InputProcessor {
 	
 	public final float TILES_PER_SECOND = 3.0f;
-	public TautSprite playerSprite = new TautSprite();
-	private Vector3 playerPosition;
+	public TautAnimatedSprite playerSprite;
 	private boolean isUsingInput;
 	private static Player instance;
+	public SpriteMovement movement;
+	
 	
 	private Player()
 	{
-		playerSprite.walkAnimation = GlobalData.getPlayerWalkAnimation();
-		playerPosition = new Vector3(0f,0f,0f);
+		playerSprite  = GlobalData.getPlayerWalkAnimation();
+		playerSprite.isUsingSpriteMovementInstance(false);
 		isUsingInput = true;
+		movement = new SpriteMovement(new Vector3(0f,0f,0f), new Vector3(1f, 1f, 1f));
 	}
 	
 	public static Player getPlayer()
@@ -43,14 +48,6 @@ public class Player implements InputProcessor {
 		public static Key down = new Key();
 	}
 	
-	private static class PlayerMovement
-	{
-		public MovementDirection xMovement = MovementDirection.NONE;
-		public MovementDirection yMovement = MovementDirection.NONE;
-		public static Vector3 pastTranslation;
-	}
-	static enum MovementDirection {NEGATIVE, NONE, POSITIVE}
-	
 	
 	
 	public void isUsingInput(boolean isUsingInput)
@@ -68,6 +65,8 @@ public class Player implements InputProcessor {
 		int mapWidth = map.getProperties().get("width",Integer.class);
 		int mapHeight = map.getProperties().get("height", Integer.class);
 		
+		Vector3 playerPosition = movement.getSpriteWorldCoords();
+		
 		if(playerPosition.x < 0.0f)
 			return false;
 		if(playerPosition.x > ((float)mapWidth)-1f)
@@ -84,7 +83,9 @@ public class Player implements InputProcessor {
 	{
 		int mapWidth = map.getProperties().get("width",Integer.class);
 		int mapHeight = map.getProperties().get("height", Integer.class);
-		
+
+		Vector3 playerPosition = movement.getSpriteWorldCoords();
+
 		if(playerPosition.x < 0.0f)
 			playerPosition.x = 0.0f;
 		if(playerPosition.x > ((float)mapWidth)-1f)
@@ -96,152 +97,67 @@ public class Player implements InputProcessor {
 	}
 	
 	
-	public void update(float delta, TiledMap map)
+	public void update(float delta, TiledMap map, TautCamera camera)
 	{
 		if(!isUsingInput)
 			return;
 		
-		PlayerMovement playerMovement = new PlayerMovement();
+		DirectionData direction = new DirectionData();
 		if(Inputs.left.isPressed)
 		{
-			playerSprite.walkAnimation.setSpriteBackward();
-			playerMovement.xMovement = MovementDirection.NEGATIVE;
+			playerSprite.setSpriteBackward();
+			direction.x = Direction.NEGATIVE;
 			Inputs.left.timeSincePressed += delta;
 		}
 		if(Inputs.right.isPressed)
 		{
-			playerSprite.walkAnimation.setSpriteForward();
-			playerMovement.xMovement = MovementDirection.POSITIVE;
+			playerSprite.setSpriteForward();
+			direction.x = Direction.POSITIVE;
 			Inputs.right.timeSincePressed += delta;
 		}
 		if(Inputs.up.isPressed)
 		{
 			Inputs.up.timeSincePressed += delta;
-			playerMovement.yMovement = MovementDirection.POSITIVE;
+			direction.y = Direction.POSITIVE;
 		}
 		if(Inputs.down.isPressed)
 		{
 			Inputs.down.timeSincePressed += delta;
-			playerMovement.yMovement = MovementDirection.NEGATIVE;
+			direction.y = Direction.NEGATIVE;
 		}
 		
 		if(Inputs.left.isPressed && Inputs.right.isPressed)
 		{
-			playerSprite.walkAnimation.setSpriteForward();
-			playerMovement.xMovement = MovementDirection.NONE;
+			playerSprite.setSpriteForward();
+			direction.x = Direction.NONE;
 			Inputs.left.timeSincePressed = 0.0;
 			Inputs.right.timeSincePressed = 0.0;
 		}
 		if(Inputs.up.isPressed && Inputs.down.isPressed)
 		{
-			playerMovement.yMovement = MovementDirection.NONE;
+			direction.y = Direction.NONE;
 			Inputs.up.timeSincePressed = 0.0;
 			Inputs.down.timeSincePressed = 0.0;
 		}
 		
 		
-		// based upon input, get player translation
-		Vector3 translation = getPlayerTranslation(playerMovement, delta);
+		movement.setX(direction.x);
+		movement.setY(direction.y);
 		
-		if(translation.x != 0.0f || translation.y != 0.0f) // if sprite is moving, animate him
-		{
-			playerSprite.walkAnimation.addStateTime(delta);
-		}
-		PlayerMovement.pastTranslation = translation; // set pastTranslation for next run
-		playerPosition.add(translation);
+		movement.update(camera, delta);
 		
-		if(!isPlayerInMapBounds(map))
-			setPlayerInBounds(map);
+		playerSprite.update(delta, camera, movement);
+		
+		setPlayerInBounds(map);
+
 	}
 	
 	public Vector3 getPlayerWorldPosition()
 	{
-		return playerPosition;
+		return movement.getSpriteWorldCoords();
 	}
 	
-	private Vector3 getPlayerTranslation(PlayerMovement playerMovement, float delta)
-	{
-		Vector3 translation = new Vector3(0f,0f,0f);
-		if(playerMovement.xMovement == MovementDirection.POSITIVE)
-		{
-			translation.x = getMovementMagnitude(delta);
-		}else if(playerMovement.xMovement == MovementDirection.NEGATIVE)
-		{
-			translation.x = -getMovementMagnitude(delta);
-		}else if(playerMovement.xMovement == MovementDirection.NONE)
-		{
-			if(PlayerMovement.pastTranslation != null && playerPosition.x%1.0 != 0.0f)// if not currently at tile, but not set to move 
-			{ 
-				if(PlayerMovement.pastTranslation.x > 0.0f) // end on next positive tile
-				{
-					float magnitude = getMovementMagnitude(delta);
-					float nextTile = (float)Math.ceil(playerPosition.x);
-					
-					if(playerPosition.x + magnitude > nextTile) // if magnitude would overshoot next tile
-					{
-						magnitude = nextTile - playerPosition.x; // set magnitude to not overshoot
-					}
-					
-					translation.x = magnitude;
-				}else if(PlayerMovement.pastTranslation.x < 0.0f) // end on next negative tile
-				{
-					float magnitude = getMovementMagnitude(delta);
-					float nextTile = (float)Math.floor(playerPosition.x);
-					
-					if(playerPosition.x - magnitude < nextTile) // if magnitude would overshoot next tile
-					{
-						magnitude = playerPosition.x - nextTile; // set magnitude to not overshoot
-					}
-					
-					translation.x = -magnitude;
-				}
-			}
-		}
-		
-		
-		
-		if(playerMovement.yMovement == MovementDirection.POSITIVE)
-		{
-			translation.y = getMovementMagnitude(delta);
-		}else if(playerMovement.yMovement == MovementDirection.NEGATIVE)
-		{
-			translation.y = -getMovementMagnitude(delta);
-		}else if(playerMovement.yMovement == MovementDirection.NONE)
-		{
-			if(PlayerMovement.pastTranslation != null && playerPosition.y%1.0 != 0.0f)// if not currently at tile, but not set to move 
-			{ 
-				if(PlayerMovement.pastTranslation.y > 0.0f) // end on next positive tile
-				{
-					float magnitude = getMovementMagnitude(delta);
-					float nextTile = (float)Math.ceil(playerPosition.y);
-					
-					if(playerPosition.y + magnitude > nextTile) // if magnitude would overshoot next tile
-					{
-						magnitude = nextTile - playerPosition.y; // set magnitude to not overshoot
-					}
-					
-					translation.y = magnitude;
-				}else if(PlayerMovement.pastTranslation.y < 0.0f) // end on next negative tile
-				{
-					float magnitude = getMovementMagnitude(delta);
-					float nextTile = (float)Math.floor(playerPosition.y);
-					
-					if(playerPosition.y - magnitude < nextTile) // if magnitude would overshoot next tile
-					{
-						magnitude = playerPosition.y - nextTile; // set magnitude to not overshoot
-					}
-					
-					translation.y = -magnitude;
-				}
-			}
-		}
-		return translation;
-	}
 
-	private float getMovementMagnitude(float delta)
-	{
-		return TILES_PER_SECOND * delta; // linearly scale tiles per second for speed
-	}
 	
 	
 	public boolean keyUp(int keycode) {

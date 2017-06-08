@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.math.Vector3;
 import com.taut.game.objects.TautAnimatedSprite;
 import com.taut.game.objects.TautSprite;
 
@@ -22,6 +23,7 @@ public class GlobalData {
 	private static int walkSheetHeight = 1;
 	private static int tileSize = 16;
 	private static float spriteMovementSpeed = 3.0f;
+	private static Vector3 normalSpriteDimensions = new Vector3(1f, 1f, 0f);
 	private static BitmapFont font;
 	
 	public static BitmapFont getMainFont()
@@ -75,7 +77,8 @@ public class GlobalData {
 	
 	public static TautAnimatedSprite getPlayerWalkAnimation()
 	{
-		return new TautAnimatedSprite(GlobalData.getWalkSheetSpeed(), getPlayerWalkAnimationTextures());
+		return new TautAnimatedSprite(GlobalData.getWalkSheetSpeed(), getPlayerWalkAnimationTextures(),
+				new Vector3(0f, 0f, 0f));
 	}
 	
 	public static TextureRegion[] getPlayerWalkAnimationTextures()
@@ -89,6 +92,11 @@ public class GlobalData {
 	public static int getTileSize()
 	{
 		return tileSize;
+	}
+	
+	public static Vector3 getNormalSpriteDimensions()
+	{
+		return normalSpriteDimensions;
 	}
 	
 }
