@@ -26,7 +26,7 @@ public abstract class Enemy implements Combatant {
 	
 	public void preRender(TautCamera camera, float delta, TiledMap map)
 	{
-		animatedSprite.update(delta, camera);
+		animatedSprite.update(delta, camera, map);
 		action.doAction(animatedSprite.getSpriteKeyFrame(spriteStateTime), camera, delta, map);
 	}
 	

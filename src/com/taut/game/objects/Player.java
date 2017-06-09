@@ -60,96 +60,67 @@ public class Player implements InputProcessor {
 		return isUsingInput;
 	}
 	
-	public boolean isPlayerInMapBounds(TiledMap map)
-	{
-		int mapWidth = map.getProperties().get("width",Integer.class);
-		int mapHeight = map.getProperties().get("height", Integer.class);
-		
-		Vector3 playerPosition = movement.getSpriteWorldCoords();
-		
-		if(playerPosition.x < 0.0f)
-			return false;
-		if(playerPosition.x > ((float)mapWidth)-1f)
-			return false;
-		if(playerPosition.y < 0.0f)
-			return false;
-		if(playerPosition.y > ((float)mapHeight)-1f)
-			return false;
-		
-		return true;
-	}
-	
-	public void setPlayerInBounds(TiledMap map)
-	{
-		int mapWidth = map.getProperties().get("width",Integer.class);
-		int mapHeight = map.getProperties().get("height", Integer.class);
 
-		Vector3 playerPosition = movement.getSpriteWorldCoords();
-
-		if(playerPosition.x < 0.0f)
-			playerPosition.x = 0.0f;
-		if(playerPosition.x > ((float)mapWidth)-1f)
-			playerPosition.x = ((float)mapWidth)-1f;
-		if(playerPosition.y < 0.0f)
-			playerPosition.y = 0.0f;
-		if(playerPosition.y > ((float)mapHeight)-1f)
-			playerPosition.y = ((float)mapHeight)-1f;
-	}
-	
 	
 	public void update(float delta, TiledMap map, TautCamera camera)
 	{
-		if(!isUsingInput)
-			return;
+		if(isUsingInput)
+		{
+			DirectionData direction = new DirectionData();
+			if(Inputs.left.isPressed)
+			{
+				playerSprite.setSpriteBackward();
+				direction.x = Direction.NEGATIVE;
+				Inputs.left.timeSincePressed += delta;
+			}
+			if(Inputs.right.isPressed)
+			{
+				playerSprite.setSpriteForward();
+				direction.x = Direction.POSITIVE;
+				Inputs.right.timeSincePressed += delta;
+			}
+			if(Inputs.up.isPressed)
+			{
+				Inputs.up.timeSincePressed += delta;
+				direction.y = Direction.POSITIVE;
+			}
+			if(Inputs.down.isPressed)
+			{
+				Inputs.down.timeSincePressed += delta;
+				direction.y = Direction.NEGATIVE;
+			}
+			
+			if(Inputs.left.isPressed && Inputs.right.isPressed)
+			{
+				playerSprite.setSpriteForward();
+				direction.x = Direction.NONE;
+				Inputs.left.timeSincePressed = 0.0;
+				Inputs.right.timeSincePressed = 0.0;
+			}
+			if(Inputs.up.isPressed && Inputs.down.isPressed)
+			{
+				direction.y = Direction.NONE;
+				Inputs.up.timeSincePressed = 0.0;
+				Inputs.down.timeSincePressed = 0.0;
+			}
+			
+			if(!movement.isMovingToGoalTile())
+			{
+				movement.setX(direction.x);
+				movement.setY(direction.y);
+			}
+		}
+		movement.update(camera, delta, map);
 		
-		DirectionData direction = new DirectionData();
-		if(Inputs.left.isPressed)
+		if(movement.isMovingToGoalTile())
 		{
-			playerSprite.setSpriteBackward();
-			direction.x = Direction.NEGATIVE;
-			Inputs.left.timeSincePressed += delta;
+			if(movement.getX() == Direction.POSITIVE)
+				playerSprite.setSpriteForward();
+			if(movement.getX() == Direction.NEGATIVE)
+				playerSprite.setSpriteBackward();
 		}
-		if(Inputs.right.isPressed)
-		{
-			playerSprite.setSpriteForward();
-			direction.x = Direction.POSITIVE;
-			Inputs.right.timeSincePressed += delta;
-		}
-		if(Inputs.up.isPressed)
-		{
-			Inputs.up.timeSincePressed += delta;
-			direction.y = Direction.POSITIVE;
-		}
-		if(Inputs.down.isPressed)
-		{
-			Inputs.down.timeSincePressed += delta;
-			direction.y = Direction.NEGATIVE;
-		}
-		
-		if(Inputs.left.isPressed && Inputs.right.isPressed)
-		{
-			playerSprite.setSpriteForward();
-			direction.x = Direction.NONE;
-			Inputs.left.timeSincePressed = 0.0;
-			Inputs.right.timeSincePressed = 0.0;
-		}
-		if(Inputs.up.isPressed && Inputs.down.isPressed)
-		{
-			direction.y = Direction.NONE;
-			Inputs.up.timeSincePressed = 0.0;
-			Inputs.down.timeSincePressed = 0.0;
-		}
-		
-		
-		movement.setX(direction.x);
-		movement.setY(direction.y);
-		
-		movement.update(camera, delta);
 		
 		playerSprite.update(delta, camera, movement);
-		
-		setPlayerInBounds(map);
-
 	}
 	
 	public Vector3 getPlayerWorldPosition()

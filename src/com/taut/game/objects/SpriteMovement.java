@@ -1,7 +1,16 @@
 package com.taut.game.objects;
 
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 import com.taut.game.GlobalData;
+
+/**
+ * @author porgull
+ * Class used in sprites
+ * or the player which 
+ * controls their movement
+ * across the map
+ */
 
 public class SpriteMovement {
 
@@ -15,6 +24,11 @@ public class SpriteMovement {
 		directionData = new DirectionData();
 		lastTile = new Vector3(Math.round(startLocation.x), Math.round(startLocation.y), 0f);
 		this.spriteDimensions = spriteDimensions;
+	}
+	
+	public Vector3 getLastTile()
+	{
+		return lastTile;
 	}
 	
 	public static class DirectionData
@@ -32,16 +46,72 @@ public class SpriteMovement {
 	
 	public static enum Direction {NEGATIVE, NONE, POSITIVE}
 	
-	
-	public void update(TautCamera camera, float delta)
+	private boolean isInMapBounds(TiledMap map)
 	{
-		Vector3 worldTranslation = getWorldTranslation(delta);
+		int mapWidth = map.getProperties().get("width",Integer.class);
+		int mapHeight = map.getProperties().get("height", Integer.class);
+		
+		Vector3 playerPosition = getSpriteWorldCoords();
+		
+		if(playerPosition.x < 0.0f)
+			return false;
+		if(playerPosition.x > ((float)mapWidth)-spriteDimensions.x)
+			return false;
+		if(playerPosition.y < 0.0f)
+			return false;
+		if(playerPosition.y > ((float)mapHeight)-spriteDimensions.y)
+			return false;
+		
+		return true;
+	}
+	
+	private boolean isAtXUpperBound(TiledMap map)
+	{
+		int mapWidth = map.getProperties().get("width",Integer.class);
+		return location.x == ((float)mapWidth)-spriteDimensions.x;
+	}
+	private boolean isAtXLowerBound(TiledMap map)
+	{
+		return location.x == 0.0f;
+	}
+	private boolean isAtYUpperBound(TiledMap map)
+	{
+		int mapHeight = map.getProperties().get("height",Integer.class);
+		return location.y == ((float)mapHeight)-spriteDimensions.y;
+	}
+	private boolean isAtYLowerBound(TiledMap map)
+	{
+		return location.y == 0.0f;
+	}
+	private void setInBounds(TiledMap map)
+	{
+		int mapWidth = map.getProperties().get("width",Integer.class);
+		int mapHeight = map.getProperties().get("height", Integer.class);
+
+		Vector3 playerPosition = getSpriteWorldCoords();
+
+		if(playerPosition.x < 0.0f)
+			playerPosition.x = 0.0f;
+		if(playerPosition.x > ((float)mapWidth)-spriteDimensions.x)
+			playerPosition.x = ((float)mapWidth)-spriteDimensions.x;
+		if(playerPosition.y < 0.0f)
+			playerPosition.y = 0.0f;
+		if(playerPosition.y > ((float)mapHeight)-spriteDimensions.y)
+			playerPosition.y = ((float)mapHeight)-spriteDimensions.y;
+	}
+	
+	
+	public void update(TautCamera camera, float delta, TiledMap map)
+	{
+		Vector3 worldTranslation = getWorldTranslation(delta, map);
 		
 		updateLastTile(camera, worldTranslation);
 				
 		location.add(worldTranslation);
 		
 		directionData.pastTranslation = worldTranslation;
+		if(!isInMapBounds(map))
+			setInBounds(map);
 	}
 	
 	public void setLocation(Vector3 location)
@@ -50,6 +120,8 @@ public class SpriteMovement {
 		directionData.pastTranslation = null;
 		directionData.xTiles = 0;
 		directionData.yTiles = 0;
+		setXGoalTile();
+		setYGoalTile();
 	}
 	
 	public Direction getX()
@@ -70,6 +142,16 @@ public class SpriteMovement {
 	public Vector3 getSpriteWorldCoords()
 	{
 		return location;
+	}
+	
+	public boolean isMoving()
+	{
+		return directionData.pastTranslation.x != 0f || directionData.pastTranslation.y != 0f;
+	}
+	
+	public boolean isMovingToGoalTile()
+	{
+		return directionData.xTiles > 0 || directionData.yTiles > 0;
 	}
 	
 	private void updateLastTile(TautCamera camera, Vector3 translation)
@@ -139,6 +221,7 @@ public class SpriteMovement {
 		{
 			directionData.xTiles = 0;
 		}
+		setXGoalTile();
 	}
 	public void setY(Direction direction, int tiles)
 	{
@@ -148,16 +231,28 @@ public class SpriteMovement {
 		{
 			directionData.yTiles = 0;
 		}
+		setYGoalTile();
 	}
 	public void setX(Direction direction)
 	{
 		directionData.x = direction;
 		directionData.xTiles = 0;
+		setXGoalTile();
 	}
 	public void setY(Direction direction)
 	{
 		directionData.y = direction;
 		directionData.yTiles = 0;
+		setYGoalTile();
+	}
+	
+	private void setXGoalTile()
+	{
+		directionData.goalTile.x = lastTile.x + (float)directionData.xTiles;
+	}
+	private void setYGoalTile()
+	{
+		directionData.goalTile.y = lastTile.y + (float)directionData.yTiles;
 	}
 	
 	public void stopMovement()
@@ -168,16 +263,37 @@ public class SpriteMovement {
 		directionData.yTiles = 0;
 	}
 	
-	private Vector3 getWorldTranslation(float delta)
-	{
+
+	/* 
+	 * I sincerely apologize about this method
+	 * It's so ugly
+	 * It's so bad
+	 * But, hey, it works ;) 
+	 */
+	private Vector3 getWorldTranslation(float delta, TiledMap map)
+	{		
 		Vector3 translation = new Vector3(0f,0f,0f);
+
+		// make sure movement is within map bounds
+		if(isAtXUpperBound(map) && directionData.x == Direction.POSITIVE)
+			stopX();
+
+		if(isAtXLowerBound(map) && directionData.x == Direction.NEGATIVE)
+			stopX();
+		
+		if(isAtYUpperBound(map) && directionData.y == Direction.POSITIVE)
+			stopY();
+
+		if(isAtYLowerBound(map) && directionData.y == Direction.NEGATIVE)
+			stopY();
+		
 		if(directionData.x == Direction.POSITIVE)
 		{
 			float movement = getMovementMagnitude(delta);
 			
-			if(directionData.xTiles != 0 && translation.y + movement > directionData.goalTile.y)
+			if(directionData.xTiles != 0 && location.x + movement > directionData.goalTile.x)
 			{
-				movement = directionData.goalTile.y - location.y;
+				movement = directionData.goalTile.x - location.x;
 				stopX();
 			}
 			
@@ -186,14 +302,14 @@ public class SpriteMovement {
 		}else if(directionData.x == Direction.NEGATIVE)
 		{
 			float movement = -getMovementMagnitude(delta);
-			
-			if(directionData.xTiles != 0 && translation.x + movement < directionData.goalTile.x)
+						
+			if(directionData.xTiles != 0 && location.x + movement < directionData.goalTile.x)
 			{
 				movement = location.x - directionData.goalTile.x;
 				stopX();
 			}
 			
-			translation.x = -getMovementMagnitude(delta);
+			translation.x = movement;
 		}else if(directionData.x == Direction.NONE)
 		{
 			if(directionData.pastTranslation != null && location.x%1.0 != 0.0f)// if not currently at tile, but not set to move 
@@ -226,8 +342,8 @@ public class SpriteMovement {
 		if(directionData.y == Direction.POSITIVE)
 		{
 			float movement = getMovementMagnitude(delta);
-			
-			if(directionData.yTiles != 0 && translation.y + movement > directionData.goalTile.y)
+
+			if(directionData.yTiles != 0 && location.y + movement > directionData.goalTile.y)
 			{
 				movement = directionData.goalTile.y - location.y;
 				stopY();
@@ -238,7 +354,7 @@ public class SpriteMovement {
 		{
 			float movement = -getMovementMagnitude(delta);
 			
-			if(directionData.yTiles != 0 && translation.y + movement < directionData.goalTile.y)
+			if(directionData.yTiles != 0 && location.y + movement < directionData.goalTile.y)
 			{
 				movement = location.y - directionData.goalTile.y;
 				stopY();

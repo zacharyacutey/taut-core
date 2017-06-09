@@ -1,10 +1,10 @@
 package com.taut.game.objects;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.taut.game.GlobalData;
-import com.taut.game.objects.SpriteMovement.Direction;
 
 /**
  * @author porgull
@@ -115,23 +115,23 @@ public class TautAnimatedSprite extends Animation<TextureRegion> {
 		return sprites;
 	}
 	
-	public void update(float delta, TautCamera camera)
+	public void update(float delta, TautCamera camera, TiledMap map)
 	{
-		movement.update(camera, delta);
+		movement.update(camera, delta, map);
 		
 		spriteCameraCoords = camera.project(movement.getSpriteWorldCoords());
 		
 		// if moving, then progress through walk animation
-		if(movement.getX() != Direction.NONE || movement.getY() != Direction.NONE)
+		if(movement.isMoving())
 			addStateTime(delta);
 		
 	}
 	
 	// use when using own movement, not this sprite's instance
 	public void update(float delta, TautCamera camera, SpriteMovement movement)
-	{				
+	{		
 		// if moving, then progress through walk animation
-		if(movement.getX() != Direction.NONE || movement.getY() != Direction.NONE)
+		if(movement.isMoving())
 			addStateTime(delta);
 		
 	}

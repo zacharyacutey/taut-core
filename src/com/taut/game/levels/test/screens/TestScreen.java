@@ -17,6 +17,7 @@ import com.taut.game.levels.test.TestData;
 import com.taut.game.models.NPC;
 import com.taut.game.models.NPCGenerator;
 import com.taut.game.objects.Player;
+import com.taut.game.objects.SpriteMovement.Direction;
 import com.taut.game.objects.TautAnimatedSprite;
 import com.taut.game.objects.TautCamera;
 import com.taut.game.objects.TautOrthogonalTiledMapRenderer;
@@ -58,7 +59,8 @@ public class TestScreen extends ScreenAdapter {
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
 		player = Player.getPlayer();
-		player.isUsingInput(true);
+		player.movement.setX(Direction.POSITIVE, 10);
+		player.movement.setY(Direction.POSITIVE, 10);
 		Gdx.input.setInputProcessor(player);
 	}
 	
@@ -140,7 +142,7 @@ public class TestScreen extends ScreenAdapter {
 				
 				TautAnimatedSprite npcSpriteWalkAnimation = new TautAnimatedSprite(GlobalData.getWalkSheetSpeed(), TautSprite.splitTexture(npcTexture, GlobalData.getWalkSheetWidth(), GlobalData.getWalkSheetHeight()), npcCoords);
 				
-				npcSpriteWalkAnimation.update(delta, camera);
+				npcSpriteWalkAnimation.update(delta, camera, map);
 				
 				TautSprite npcSprite = npcSpriteWalkAnimation.getSpriteKeyFrame();
 				npcSprite.setScaled(camera);
