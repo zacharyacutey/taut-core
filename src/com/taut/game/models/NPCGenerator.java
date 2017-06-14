@@ -1,12 +1,11 @@
 package com.taut.game.models;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.nio.file.Path;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.taut.game.objects.FolderApplication;
 
 /**
  * @author 19smitgr
@@ -14,11 +13,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * json input and outputs
  * NPC classes based upon 
  * the json
- *
  */
 
-public class NPCGenerator {
-	public NPC createNPC(String json) {
+public class NPCGenerator implements FolderApplication {
+	public static NPC createNPC(String json) {
     	ObjectMapper mapper = new ObjectMapper();
     	
 	    NPC npc = null;
@@ -32,37 +30,17 @@ public class NPCGenerator {
 	    return npc;		
 
 	}
-	
-	public ArrayList<NPC> generateAllNPCs() {
-		NPCGenerator npcGenerator = new NPCGenerator(); 
-		ArrayList<NPC> npcs = new ArrayList<>();
+
+	@Override
+	public NPC readFromFile(Path path) {
+		NPC npc = null;
 		
-		// for some reason, different OSs create different folders when it compiles
-		String pathToNPCs;
-		File npcFolder = new File("bin");
-		if (npcFolder.exists() && npcFolder.isDirectory()) {
-			pathToNPCs = "./bin/NPC";
-		} else {
-			pathToNPCs = "./NPC";
-		}
-		
-		// read through all JSON files in the NPC folder and make NPCs
 		try {
-			Files.walk(Paths.get(pathToNPCs))
-			 .filter(Files::isRegularFile)
-			 .forEach(path -> {
-				try {
-					NPC npc = npcGenerator.createNPC(new String(Files.readAllBytes(path)));
-					npcs.add(npc);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			 });
+			npc = createNPC(new String(Files.readAllBytes(path)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		return npcs;
+
+		return npc;
 	}
 }

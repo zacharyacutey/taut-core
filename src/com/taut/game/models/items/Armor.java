@@ -1,4 +1,6 @@
-package com.taut.game.models;
+package com.taut.game.models.items;
+
+import com.taut.game.models.Item;
 
 /** 
  * @author Garrett

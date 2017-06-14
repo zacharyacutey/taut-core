@@ -1,4 +1,10 @@
-package com.taut.game.models;
+package com.taut.game.models.items;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.taut.game.models.Item;
+import com.taut.game.models.items.consumables.Buff;
 
 /** 
  * @author Garrett
@@ -11,6 +17,12 @@ public class Consumable extends Item {
 	// consumable specific stuff
 	public int hpToRestore;
 	public int gpToRestore;
+	
+	// to be populated by JSON Mapper
+	public List<String> buffStrings = new ArrayList<>();
+	// will be populated after JSON is read
+	public List<Buff> buffs = new ArrayList<>();
+	
 	
 	// we'll continually add to this list
 	public enum BuffTypes {HEALING, DEFENSE, SPEED, ATTACK} 

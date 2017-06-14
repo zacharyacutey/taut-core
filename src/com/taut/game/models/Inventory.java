@@ -1,14 +1,27 @@
 package com.taut.game.models;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.taut.game.models.items.Weapon;
 
 public class Inventory {
-	public List<Weapon> weapons = new ArrayList<>();
-	public List<Consumable> consumables = new ArrayList<>();
-	public List<Armor> armor = new ArrayList<>();
+	// id, amount
+	public Map<Integer, Integer> weaponAmounts = new HashMap<>();
+	// id lookup table for every weapon
+	public static Map<Integer, Weapon> weaponTable = new HashMap<>(); 
 	
-	public void giveItem(Item item) {
+	// fill id lookup table with all initial values at 0
+//	public static void fillWeaponTable() {
+//		ArrayList<NPC> npcs = new ArrayList<>();
+//		
+//		
+//		
+//		
+//		return npcs;
+//	}
+	
+	public void getItem(Item item) {
 		
 	}
 	
