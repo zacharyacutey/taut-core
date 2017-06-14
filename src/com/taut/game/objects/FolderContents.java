@@ -27,10 +27,10 @@ public class FolderContents {
 		
 		// read through all JSON files in the NPC folder and make NPCs
 		try {
-			Files.walk(Paths.get("./"))
+			Files.walk(Paths.get(modifiedPathName))
 			 .filter(Files::isRegularFile)
-			 .forEach(path -> {System.out.println(path);
-//				mutatedFileStorage.add((T) application.readFromFile(path));
+			 .forEach(path -> {
+				mutatedFileStorage.add((T) application.readFromFile(path));
 			 });
 		} catch (IOException e) {
 			e.printStackTrace();
