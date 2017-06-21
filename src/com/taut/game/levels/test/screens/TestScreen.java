@@ -17,12 +17,6 @@ import com.taut.game.GlobalData;
 import com.taut.game.levels.test.TestData;
 import com.taut.game.models.NPC;
 import com.taut.game.models.NPCGenerator;
-import com.taut.game.models.items.Armor;
-import com.taut.game.models.items.ArmorGenerator;
-import com.taut.game.models.items.Consumable;
-import com.taut.game.models.items.ConsumableGenerator;
-import com.taut.game.models.items.Weapon;
-import com.taut.game.models.items.WeaponGenerator;
 import com.taut.game.objects.FolderContents;
 import com.taut.game.objects.Player;
 import com.taut.game.objects.SpriteMovement.Direction;
@@ -49,17 +43,7 @@ public class TestScreen extends ScreenAdapter {
 	NPCGenerator npcGenerator = new NPCGenerator();
 	FolderContents npcFolderContents = new FolderContents("NPC");
 
-	ArrayList<Weapon> weapons = new ArrayList<>();
-	WeaponGenerator weaponGenerator = new WeaponGenerator();
-	FolderContents weaponFolderContents = new FolderContents("weapons");
 
-	ArrayList<Consumable> consumables = new ArrayList<>();
-	ConsumableGenerator consumableGenerator = new ConsumableGenerator();
-	FolderContents consumableFolderContents = new FolderContents("consumables");
-	
-	ArrayList<Armor> armor = new ArrayList<>();
-	ArmorGenerator armorGenerator = new ArmorGenerator();
-	FolderContents armorFolderContents = new FolderContents("armor");
 	
 	public TestScreen(final Taut game, String levelName, String screenName)
 	{
@@ -68,10 +52,7 @@ public class TestScreen extends ScreenAdapter {
 		this.levelName = levelName;
 		this.screenName = screenName;
 		
-		npcFolderContents.generateAndStore(npcGenerator, npcs);
-		weaponFolderContents.generateAndStore(weaponGenerator, weapons);
-		consumableFolderContents.generateAndStore(consumableGenerator, consumables);
-		armorFolderContents.generateAndStore(armorGenerator, armor);		
+		npcFolderContents.generateAndStore(npcGenerator, npcs);		
 	}
 	
 	@Override
