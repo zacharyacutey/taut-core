@@ -2,7 +2,6 @@ package com.taut.game.objects;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
-import com.taut.game.GlobalData;
 
 /**
  * @author porgull
@@ -17,6 +16,7 @@ public class SpriteMovement {
 	Vector3 location;
 	Vector3 lastTile;
 	Vector3 spriteDimensions;
+	float speed;
 	
 	public SpriteMovement(Vector3 startLocation, Vector3 spriteDimensions)
 	{
@@ -26,6 +26,16 @@ public class SpriteMovement {
 		this.spriteDimensions = spriteDimensions;
 	}
 	
+	public float getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+
+
+
 	public Vector3 getLastTile()
 	{
 		return lastTile;
@@ -406,7 +416,7 @@ public class SpriteMovement {
 	
 	private float getMovementMagnitude(float delta)
 	{
-		return GlobalData.getSpriteMovementSpeed() * delta; // linearly scale tiles per second for speed
+		return speed * delta; // linearly scale tiles per second for speed
 	}
 	
 }

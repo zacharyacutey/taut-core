@@ -2,12 +2,14 @@ package com.taut.game.models.items;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.taut.game.models.Item;
 
 /** 
  * @author Garrett
  * anything related to attacking
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Weapon extends Item {
 	int id;
 	int damageMin;

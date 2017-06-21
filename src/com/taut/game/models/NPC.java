@@ -21,6 +21,7 @@ public class NPC {
     public String dialogue;
     public int spriteId;
     public String imageName;
+    public Texture texture;
     
     // placement
     int screenId;
@@ -30,7 +31,11 @@ public class NPC {
     List<Quest> quests = new ArrayList<>();
     
     public Texture getTexture() {
-    	return new Texture(Gdx.files.internal(imageName));
+    	return texture;
+    }
+    
+    public void setTexture() {
+    	this.texture = new Texture(Gdx.files.internal(imageName));
     }
     
     public TautSprite getSprite(){

@@ -3,6 +3,7 @@ package com.taut.game.models.items;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.taut.game.models.Item;
 import com.taut.game.models.items.consumables.Buff;
 
@@ -10,6 +11,7 @@ import com.taut.game.models.items.consumables.Buff;
  * @author Garrett
  *	anything related to eating food, potions, etc.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Consumable extends Item {
 	public int id;
 	public String imagePath;
@@ -22,6 +24,7 @@ public class Consumable extends Item {
 	public List<String> buffStrings = new ArrayList<>();
 	// will be populated after JSON is read
 	public List<Buff> buffs = new ArrayList<>();
+	
 	
 	
 	// we'll continually add to this list

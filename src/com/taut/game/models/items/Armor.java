@@ -1,11 +1,13 @@
 package com.taut.game.models.items;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.taut.game.models.Item;
 
 /** 
  * @author Garrett
  * any types of clothing or armor
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Armor extends Item {
 	public int id;
 	public String imagePath;

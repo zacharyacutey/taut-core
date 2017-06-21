@@ -25,7 +25,7 @@ public class FolderContents {
 	public <T> void generateAndStore(FolderApplication application, List<T> mutatedFileStorage) {
 		String modifiedPathName = generateFolderPath();
 		
-		// read through all JSON files in the NPC folder and make NPCs
+		// read through all JSON files in the specified folder and store info in the mutatedFileStorage
 		try {
 			Files.walk(Paths.get(modifiedPathName))
 			 .filter(Files::isRegularFile)

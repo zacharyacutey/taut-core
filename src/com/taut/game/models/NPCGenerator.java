@@ -16,13 +16,14 @@ import com.taut.game.objects.FolderApplication;
  */
 
 public class NPCGenerator implements FolderApplication {
+	public static ObjectMapper mapper = new ObjectMapper();
+	
 	public static NPC createNPC(String json) {
-    	ObjectMapper mapper = new ObjectMapper();
-    	
 	    NPC npc = null;
 	    
 		try {
 			npc = mapper.readValue(json, NPC.class);
+			npc.setTexture();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

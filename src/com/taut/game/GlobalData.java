@@ -22,7 +22,6 @@ public class GlobalData {
 	private static int walkSheetWidth = 6;
 	private static int walkSheetHeight = 1;
 	private static int tileSize = 16;
-	private static float spriteMovementSpeed = 3.0f;
 	private static Vector3 normalSpriteDimensions = new Vector3(1f, 1f, 0f);
 	private static BitmapFont font;
 	
@@ -68,11 +67,6 @@ public class GlobalData {
 			playerWalkSheet.dispose();
 		if(font != null)
 			font.dispose();
-	}
-	
-	public static float getSpriteMovementSpeed()
-	{
-		return spriteMovementSpeed;
 	}
 	
 	public static TautAnimatedSprite getPlayerWalkAnimation()

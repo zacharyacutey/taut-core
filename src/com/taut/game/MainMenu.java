@@ -161,6 +161,7 @@ public class MainMenu extends ScreenAdapter implements InputProcessor {
 		if(buttonText.equals(ButtonText.continueGame))
 		{
 			game.setScreen(new TestScreen(game, "Test", "Test"));
+			batch.dispose();
 		}else if(buttonText.equals(ButtonText.newGame))
 		{
 			game.setScreen(new TestScreen(game, "Test", "Test"));

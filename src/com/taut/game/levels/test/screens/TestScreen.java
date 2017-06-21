@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -84,6 +85,7 @@ public class TestScreen extends ScreenAdapter {
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
 		player = Player.getPlayer();
+		player.initLowHPFlash(shapeRenderer);
 		player.movement.setX(Direction.POSITIVE, 10);
 		player.movement.setY(Direction.POSITIVE, 10);
 		Gdx.input.setInputProcessor(player);
@@ -91,7 +93,8 @@ public class TestScreen extends ScreenAdapter {
 	
 	public void renderPlayer(float delta)
 	{
-		player.update(delta, map, camera); // update & handle inputs for player
+		player.updateMovement(delta, map, camera); // update & handle inputs for player
+		player.updateStats(delta);
 		
 		currentSprite = player.playerSprite.getSpriteKeyFrame();
 		currentSprite.setScaled(camera);
@@ -104,8 +107,6 @@ public class TestScreen extends ScreenAdapter {
 				camera.project(new Vector3(player.getPlayerWorldPosition())); // convert from world units to camera units
 		
 		currentSprite.setXY(projectedPlayerPosition);
-		
-		
 		
 		spriteBatch.begin();
 		currentSprite.draw(spriteBatch);
@@ -190,6 +191,8 @@ public class TestScreen extends ScreenAdapter {
 		int mapHeight = map.getProperties().get("height", Integer.class);
 		
 		shapeRenderer.begin();
+		shapeRenderer.setColor(Color.WHITE);
+		
 		for(int x = 0; x < mapWidth; x++)
 		{
 			Vector3 lineStart = camera.project(new Vector3(x, 0f, 0f));

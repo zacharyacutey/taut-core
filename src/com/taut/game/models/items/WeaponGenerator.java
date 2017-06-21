@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.taut.game.objects.FolderApplication;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WeaponGenerator implements FolderApplication {
 	public static Weapon createWeapon(String json) {
     	ObjectMapper mapper = new ObjectMapper();

@@ -3,3 +3,5 @@
 /.settings/
 taut-core.iml
 .project
+/.classpath
+/.DS_Store

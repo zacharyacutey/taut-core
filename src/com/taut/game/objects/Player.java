@@ -3,9 +3,12 @@ package com.taut.game.objects;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 import com.taut.game.GlobalData;
+import com.taut.game.models.actions.FlashRenderer;
+import com.taut.game.models.actions.FlashRenderer.Flash;
 import com.taut.game.objects.SpriteMovement.Direction;
 import com.taut.game.objects.SpriteMovement.DirectionData;
 
@@ -16,14 +19,29 @@ public class Player implements InputProcessor {
 	private boolean isUsingInput;
 	private static Player instance;
 	public SpriteMovement movement;
+	public Stats stats = new Stats();
 	
+	// for low HP and other buffs
+	FlashRenderer flashRenderer;
+	Flash flash;
 	
 	private Player()
 	{
 		playerSprite  = GlobalData.getPlayerWalkAnimation();
 		playerSprite.isUsingSpriteMovementInstance(false);
 		isUsingInput = true;
+		
+		stats.setHP(10);
+		stats.setGP(100);
+		stats.setSpeed(10.0f);
+		
 		movement = new SpriteMovement(new Vector3(0f,0f,0f), new Vector3(1f, 1f, 1f));
+		movement.setSpeed(stats.getSpeed());
+	}
+	
+	public void initLowHPFlash(ShapeRenderer shapeRenderer) {
+		flashRenderer = new FlashRenderer(shapeRenderer);
+		flash = flashRenderer.createFlash(3f, 5f);
 	}
 	
 	public static Player getPlayer()
@@ -48,8 +66,6 @@ public class Player implements InputProcessor {
 		public static Key down = new Key();
 	}
 	
-	
-	
 	public void isUsingInput(boolean isUsingInput)
 	{
 		this.isUsingInput = isUsingInput;
@@ -60,9 +76,19 @@ public class Player implements InputProcessor {
 		return isUsingInput;
 	}
 	
-
+	public void updateStats(float delta) {
+		if (stats.getHP() <= 150) {
+			flashLowHealth(delta, true);
+		} else {
+			flashLowHealth(delta, false);
+		}
+	}
 	
-	public void update(float delta, TiledMap map, TautCamera camera)
+	public void flashLowHealth(float delta, boolean keepFlashing) {
+		flash.flash(delta, keepFlashing);
+	}
+	
+	public void updateMovement(float delta, TiledMap map, TautCamera camera)
 	{
 		if(isUsingInput)
 		{
