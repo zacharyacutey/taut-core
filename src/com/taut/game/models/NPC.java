@@ -23,6 +23,12 @@ public class NPC {
     public String imageName;
     public Texture texture;
     
+    /**
+     * <b>>= 0</b> == is within 2 units of player <br>
+     * <b>-1</b> == is not within 2 units of player
+     */
+    public int indexWithinInteractableNPCs = -1;
+    
     // placement
     int screenId;
     int[] coords = new int[2];

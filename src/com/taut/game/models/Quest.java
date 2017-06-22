@@ -8,7 +8,6 @@ import java.util.List;
  * Class defining quest
  * objectives and its
  * completion status
- *
  */
 
 public class Quest {

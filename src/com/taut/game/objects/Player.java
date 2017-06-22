@@ -1,12 +1,17 @@
 package com.taut.game.objects;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 import com.taut.game.GlobalData;
+import com.taut.game.models.NPC;
+import com.taut.game.models.Quest;
 import com.taut.game.models.actions.FlashRenderer;
 import com.taut.game.models.actions.FlashRenderer.Flash;
 import com.taut.game.objects.SpriteMovement.Direction;
@@ -20,6 +25,10 @@ public class Player implements InputProcessor {
 	private static Player instance;
 	public SpriteMovement movement;
 	public Stats stats = new Stats();
+	public List<Quest> quests = new ArrayList<>();
+	public List<NPC> interactableNPCs = new ArrayList<>();
+	public boolean closeToEnemy = false;
+	public boolean isInteracting = false;
 	
 	// for low HP and other buffs
 	FlashRenderer flashRenderer;
@@ -31,7 +40,7 @@ public class Player implements InputProcessor {
 		playerSprite.isUsingSpriteMovementInstance(false);
 		isUsingInput = true;
 		
-		stats.setHP(10);
+		stats.setHP(100);
 		stats.setGP(100);
 		stats.setSpeed(10.0f);
 		
@@ -64,6 +73,7 @@ public class Player implements InputProcessor {
 		public static Key right = new Key();
 		public static Key up = new Key();
 		public static Key down = new Key();
+		public static Key space = new Key();
 	}
 	
 	public void isUsingInput(boolean isUsingInput)
@@ -76,11 +86,29 @@ public class Player implements InputProcessor {
 		return isUsingInput;
 	}
 	
+	public void updateInteractions() {
+		if (interactableNPCs.size() > 0) {
+			if (isInteracting) {
+				System.out.println("I work!");
+			}
+		}
+		
+		if (closeToEnemy) {
+			// TODO: flesh out enemy system
+		}
+	}
+	
 	public void updateStats(float delta) {
-		if (stats.getHP() <= 150) {
+		boolean flashOn = false;
+		
+		if (stats.getHP() < 100) {
 			flashLowHealth(delta, true);
-		} else {
+			flashOn = true;
+			
+		// this transitions from the flash, so it doens't abruptly stop
+		} else if (flashOn && !(stats.getHP() < 100)){
 			flashLowHealth(delta, false);
+			flashOn = false;
 		}
 	}
 	
@@ -154,9 +182,6 @@ public class Player implements InputProcessor {
 		return movement.getSpriteWorldCoords();
 	}
 	
-
-	
-	
 	public boolean keyUp(int keycode) {
 		
 		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
@@ -201,6 +226,19 @@ public class Player implements InputProcessor {
 	}
 	
 	public boolean keyTyped(char character) {
+		
+		// toggle interaction with [space]
+		System.out.println(interactableNPCs);
+		if(character == ' ' && !isInteracting && interactableNPCs.size() > 0) {
+			isInteracting = true;
+			Inputs.space.isPressed = true;
+			stats.setHP(9);
+		} else if (character == ' ' && isInteracting){
+			Inputs.space.isPressed = false;
+			Inputs.space.timeSincePressed = 0.0;
+			isInteracting = false;
+		}
+		
 		return false;
 	}
 

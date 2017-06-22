@@ -14,13 +14,13 @@ import com.taut.game.models.items.WeaponGenerator;
 import com.taut.game.objects.FolderContents;
 
 public class Inventory {
-	static ArrayList<Weapon> weapons = new ArrayList<>();
-	static WeaponGenerator weaponGenerator = new WeaponGenerator();
-	static FolderContents weaponFolderContents = new FolderContents("weapons");
+	public static ArrayList<Weapon> weapons = new ArrayList<>();
+	public static WeaponGenerator weaponGenerator = new WeaponGenerator();
+	public static FolderContents weaponFolderContents = new FolderContents("weapons");
 
-	static ArrayList<Consumable> consumables = new ArrayList<>();
-	static ConsumableGenerator consumableGenerator = new ConsumableGenerator();
-	static FolderContents consumableFolderContents = new FolderContents("consumables");
+	public static ArrayList<Consumable> consumables = new ArrayList<>();
+	public static ConsumableGenerator consumableGenerator = new ConsumableGenerator();
+	public static FolderContents consumableFolderContents = new FolderContents("consumables");
 	
 	static ArrayList<Armor> armor = new ArrayList<>();
 	static ArmorGenerator armorGenerator = new ArmorGenerator();
@@ -57,7 +57,7 @@ public class Inventory {
 		CONSUMABLE
 	}
 	
-	public void getItem(int id, ItemType itemType) {
+	public void giveItem(int id, ItemType itemType) {
 		int currentAmount;
 		
 		if (itemType.equals(ItemType.WEAPON)) {

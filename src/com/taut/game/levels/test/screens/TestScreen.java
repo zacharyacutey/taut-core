@@ -76,6 +76,7 @@ public class TestScreen extends ScreenAdapter {
 	{
 		player.updateMovement(delta, map, camera); // update & handle inputs for player
 		player.updateStats(delta);
+		player.updateInteractions();
 		
 		currentSprite = player.playerSprite.getSpriteKeyFrame();
 		currentSprite.setScaled(camera);
@@ -137,7 +138,9 @@ public class TestScreen extends ScreenAdapter {
 				
 				// is within circumscribed circle of screen on the coordinate plane
 				// TODO fix if player is not in center of screen
-				return Math.sqrt(Math.pow((playerPosition.x - npcCoords.x), 2) + Math.pow((playerPosition.y - npcCoords.y), 2)) < camera.getWorldCircumscribedRadius();
+				double distanceToNPC = Math.sqrt(Math.pow((playerPosition.x - npcCoords.x), 2) + Math.pow((playerPosition.y - npcCoords.y), 2));
+				
+				return distanceToNPC < camera.getWorldCircumscribedRadius();
 			})
 			// use the NPC data previously stored in the json to create a sprite for each one
 			.forEach(npc -> {
@@ -157,6 +160,35 @@ public class TestScreen extends ScreenAdapter {
 				
 				npcSprites.add(npcSprite);
 			});
+		
+		npcs.stream().forEach(npc -> {
+			
+//			System.out.println(npc.indexWithinInteractableNPCs);
+			Vector3 npcCoords = npc.getCoordsInVector3();
+			
+			Vector3 playerPosition = player.getPlayerWorldPosition();
+			
+			double distanceToNPC = Math.sqrt(Math.pow((playerPosition.x - npcCoords.x), 2) + Math.pow((playerPosition.y - npcCoords.y), 2));
+
+			if (distanceToNPC < 2) {
+				System.out.println("IMMA FIRIN' MA LAZAR!!!");
+				player.interactableNPCs.add(npc);
+				npc.indexWithinInteractableNPCs = player.interactableNPCs.size() - 1;
+				System.out.println(player.interactableNPCs.size()-1);
+			} else if (npc.indexWithinInteractableNPCs != -1){
+//				System.out.println(player.interactableNPCs.size());
+				System.out.println(npc.indexWithinInteractableNPCs);
+				player.interactableNPCs.remove(npc.indexWithinInteractableNPCs);
+				npc.indexWithinInteractableNPCs = -1;
+//				System.out.println("pl0x");
+			}
+		});
+		
+//		npcs.forEach(npc -> {
+//			System.out.println(npc.indexWithinInteractableNPCs);
+//			
+//		});
+		
 		
 		spriteBatch.begin();
 		npcSprites.forEach(npcSprite -> {
