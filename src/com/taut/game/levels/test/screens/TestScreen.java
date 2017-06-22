@@ -136,9 +136,9 @@ public class TestScreen extends ScreenAdapter {
 				
 				// is within circumscribed circle of screen on the coordinate plane
 				// TODO fix if player is not in center of screen
-				double distanceToNPC = Math.sqrt(Math.pow((playerPosition.x - npcCoords.x), 2) + Math.pow((playerPosition.y - npcCoords.y), 2));
+				npc.distanceToPlayer = Math.sqrt(Math.pow((playerPosition.x - npcCoords.x), 2) + Math.pow((playerPosition.y - npcCoords.y), 2));
 				
-				return distanceToNPC < camera.getWorldCircumscribedRadius();
+				return npc.distanceToPlayer < camera.getWorldCircumscribedRadius();
 			})
 			// use the NPC data previously stored in the json to create a sprite for each one
 			.forEach(npc -> {
@@ -159,20 +159,13 @@ public class TestScreen extends ScreenAdapter {
 				npcSprites.add(npcSprite);
 			});
 		
-		npcs.stream().forEach(npc -> {
-			
-			Vector3 npcCoords = npc.getCoordsInVector3();
-			
-			Vector3 playerPosition = player.getPlayerWorldPosition();
-			
-			double distanceToNPC = Math.sqrt(Math.pow((playerPosition.x - npcCoords.x), 2) + Math.pow((playerPosition.y - npcCoords.y), 2));
-
-			if (distanceToNPC < 2) {
-				player.interactableNPCIDs.add(npc.id);
-			} else {
-				player.interactableNPCIDs.remove(player.interactableNPCIDs.indexOf(npc.id));
-			}
-		});
+		NPC closestNPC = npcs.stream().min((npc1, npc2) -> Double.compare(npc1.distanceToPlayer, npc2.distanceToPlayer)).orElse(null);
+		if (closestNPC.distanceToPlayer < 2) {
+			player.interactableNPC = closestNPC;
+			player.canInteract = true;
+		} else {
+			player.canInteract = false;
+		}
 		
 		spriteBatch.begin();
 		npcSprites.forEach(npcSprite -> {
