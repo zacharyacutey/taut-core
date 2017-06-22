@@ -38,6 +38,7 @@ public class NPCGenerator implements FolderApplication {
 		
 		try {
 			npc = createNPC(new String(Files.readAllBytes(path)));
+			npc.id = NPC.numOfNPCs;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

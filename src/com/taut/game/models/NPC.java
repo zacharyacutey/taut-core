@@ -17,17 +17,17 @@ import com.taut.game.objects.TautSprite;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NPC {
+	public static int numOfNPCs;
+	public int id;
     public String name;
     public String dialogue;
     public int spriteId;
     public String imageName;
     public Texture texture;
     
-    /**
-     * <b>>= 0</b> == is within 2 units of player <br>
-     * <b>-1</b> == is not within 2 units of player
-     */
-    public int indexWithinInteractableNPCs = -1;
+    public NPC() {
+    	numOfNPCs += 1;
+    }
     
     // placement
     int screenId;

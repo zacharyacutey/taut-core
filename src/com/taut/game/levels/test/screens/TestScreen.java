@@ -42,8 +42,6 @@ public class TestScreen extends ScreenAdapter {
 	ArrayList<NPC> npcs = new ArrayList<>();
 	NPCGenerator npcGenerator = new NPCGenerator();
 	FolderContents npcFolderContents = new FolderContents("NPC");
-
-
 	
 	public TestScreen(final Taut game, String levelName, String screenName)
 	{
@@ -163,7 +161,6 @@ public class TestScreen extends ScreenAdapter {
 		
 		npcs.stream().forEach(npc -> {
 			
-//			System.out.println(npc.indexWithinInteractableNPCs);
 			Vector3 npcCoords = npc.getCoordsInVector3();
 			
 			Vector3 playerPosition = player.getPlayerWorldPosition();
@@ -171,24 +168,11 @@ public class TestScreen extends ScreenAdapter {
 			double distanceToNPC = Math.sqrt(Math.pow((playerPosition.x - npcCoords.x), 2) + Math.pow((playerPosition.y - npcCoords.y), 2));
 
 			if (distanceToNPC < 2) {
-				System.out.println("IMMA FIRIN' MA LAZAR!!!");
-				player.interactableNPCs.add(npc);
-				npc.indexWithinInteractableNPCs = player.interactableNPCs.size() - 1;
-				System.out.println(player.interactableNPCs.size()-1);
-			} else if (npc.indexWithinInteractableNPCs != -1){
-//				System.out.println(player.interactableNPCs.size());
-				System.out.println(npc.indexWithinInteractableNPCs);
-				player.interactableNPCs.remove(npc.indexWithinInteractableNPCs);
-				npc.indexWithinInteractableNPCs = -1;
-//				System.out.println("pl0x");
+				player.interactableNPCIDs.add(npc.id);
+			} else {
+				player.interactableNPCIDs.remove(player.interactableNPCIDs.indexOf(npc.id));
 			}
 		});
-		
-//		npcs.forEach(npc -> {
-//			System.out.println(npc.indexWithinInteractableNPCs);
-//			
-//		});
-		
 		
 		spriteBatch.begin();
 		npcSprites.forEach(npcSprite -> {

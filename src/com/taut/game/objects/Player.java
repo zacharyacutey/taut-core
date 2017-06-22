@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 import com.taut.game.GlobalData;
-import com.taut.game.models.NPC;
 import com.taut.game.models.Quest;
 import com.taut.game.models.actions.FlashRenderer;
 import com.taut.game.models.actions.FlashRenderer.Flash;
@@ -26,7 +25,7 @@ public class Player implements InputProcessor {
 	public SpriteMovement movement;
 	public Stats stats = new Stats();
 	public List<Quest> quests = new ArrayList<>();
-	public List<NPC> interactableNPCs = new ArrayList<>();
+	public List<Integer> interactableNPCIDs = new ArrayList<>();
 	public boolean closeToEnemy = false;
 	public boolean isInteracting = false;
 	
@@ -87,7 +86,7 @@ public class Player implements InputProcessor {
 	}
 	
 	public void updateInteractions() {
-		if (interactableNPCs.size() > 0) {
+		if (interactableNPCIDs.size() > 0) {
 			if (isInteracting) {
 				System.out.println("I work!");
 			}
@@ -228,8 +227,7 @@ public class Player implements InputProcessor {
 	public boolean keyTyped(char character) {
 		
 		// toggle interaction with [space]
-		System.out.println(interactableNPCs);
-		if(character == ' ' && !isInteracting && interactableNPCs.size() > 0) {
+		if(character == ' ' && !isInteracting && interactableNPCIDs.size() > 0) {
 			isInteracting = true;
 			Inputs.space.isPressed = true;
 			stats.setHP(9);
