@@ -155,7 +155,6 @@ public class TestScreen extends ScreenAdapter {
 				TautSprite npcSprite = npcSpriteWalkAnimation.getSpriteKeyFrame();
 				npcSprite.setScaled(camera);
 				
-				
 				npcSprites.add(npcSprite);
 			});
 		

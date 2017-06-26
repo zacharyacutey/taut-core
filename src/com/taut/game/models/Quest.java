@@ -3,6 +3,8 @@ package com.taut.game.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * @author 19smitgr
  * Class defining quest
@@ -10,11 +12,14 @@ import java.util.List;
  * completion status
  */
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Quest {
-    String name;
-    List<QuestCondition> questConditions = new ArrayList<>(); 
-    List<CompleteAction> completeActions = new ArrayList<>();
-    String beginDialogue;
+    String questName;
+    QuestBeginCondition[] questConditions;
+    //List<QuestCondition> questConditionsList = new ArrayList<>();
+    CompleteAction[] completeActions;
+    //List<CompleteAction> completeActionsList = new ArrayList<>();
+    String questDialogue;
     
     boolean done;
     boolean started; 

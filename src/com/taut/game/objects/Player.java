@@ -30,6 +30,7 @@ public class Player implements InputProcessor {
 	public boolean closeToEnemy = false;
 	public boolean canInteract = false;
 	public boolean isInteracting = false;
+	public List<String> completedQuests = new ArrayList<>();
 	
 	// for low HP and other buffs
 	FlashRenderer flashRenderer;
@@ -91,6 +92,8 @@ public class Player implements InputProcessor {
 		if (isInteracting) {
 			System.out.println("I am interacting. Now, to flesh out the quest UI!");
 			
+			// TODO: ideally, we'll display all the info for each quest in a UI and have buttons to accept quest
+			quests = this.interactableNPC.getQuestList();
 		}
 		
 		if (closeToEnemy) {

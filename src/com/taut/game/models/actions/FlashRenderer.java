@@ -61,7 +61,10 @@ public class FlashRenderer {
 		
 		float halfDuration = flash.duration/2;
 		
-		// curve of y = k/h^2 (x-h)^2 + k
+		/*
+		 * curve of y = k/h^2 (x-h)^2 + k
+		 * too cool for a sin function
+		 */
 		double intensity = -flash.maximumIntensity/Math.pow(halfDuration, 2)*Math.pow(flash.timePassed-halfDuration, 2)+flash.maximumIntensity;
 		
 		return intensity;

@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.taut.game.objects.TautSprite;
 
 /**
@@ -25,11 +26,12 @@ public class NPC {
     public double distanceToPlayer;
     
     // placement
-    int screenId;
-    int[] coords = new int[2];
+    public int screenId;
+    public int[] coords = new int[2];
  
     // quests
-    List<Quest> quests = new ArrayList<>();
+    public Quest[] quests;
+    public ArrayList<Quest> questList = new ArrayList<Quest>(); 
     
     public Texture getTexture() {
     	return texture;
@@ -99,13 +101,20 @@ public class NPC {
 		this.coords[0] = (int) coords.x;
 		this.coords[1] = (int) coords.y;
 	}
-
-	public List<Quest> getQuests() {
+	
+	/**
+	 * the JSON parser only maps onto normal arrays, but an arraylist is more convenient, hence 2 different lists for the quests
+	 */
+	public Quest[] getQuests() {
 		return quests;
 	}
 
-	public void setQuests(List<Quest> quests) {
-		this.quests = quests;
+	public ArrayList<Quest> getQuestList() {
+		return questList;
+	}
+
+	public void setQuestList(ArrayList<Quest> quests) {
+		this.questList = questList;
 	}
 
 	public void setDistanceToPlayer(double distance) {
