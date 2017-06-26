@@ -90,6 +90,7 @@ public class Player implements InputProcessor {
 	public void updateInteractions() {
 		if (isInteracting) {
 			System.out.println("I am interacting. Now, to flesh out the quest UI!");
+			
 		}
 		
 		if (closeToEnemy) {
@@ -262,6 +263,14 @@ public class Player implements InputProcessor {
 
 	public boolean scrolled(int amount) {
 		return false;
+	}
+
+	public void setInteractableNPC(NPC closestNPC) {
+		this.interactableNPC = closestNPC;
+	}
+
+	public void canInteract(boolean canInteract) {
+		this.canInteract = canInteract;
 	}
 	
 }

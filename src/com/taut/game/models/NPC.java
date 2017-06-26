@@ -107,6 +107,13 @@ public class NPC {
 	public void setQuests(List<Quest> quests) {
 		this.quests = quests;
 	}
+
+	public void setDistanceToPlayer(double distance) {
+		this.distanceToPlayer = distance;
+	}
     
+	public double getDistanceToPlayer() {
+		return this.distanceToPlayer;
+	}
     
 }
