@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.taut.game.models.quest.Quest;
 import com.taut.game.objects.FolderApplication;
 
 /**
@@ -26,9 +27,12 @@ public class NPCGenerator implements FolderApplication {
 		try {
 			npc = mapper.readValue(json, NPC.class);
 			npc.setTexture();
+			npc.getQuests().forEach(quest -> {
+				quest.getCompleteActions().fillCombinedActionsList();
+			});
 
 			// array is used for json mapping, but arraylist is more convenient
-			npc.setQuestList((ArrayList<Quest>) Arrays.asList(npc.getQuests()));
+			npc.setQuests(npc.getQuests());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

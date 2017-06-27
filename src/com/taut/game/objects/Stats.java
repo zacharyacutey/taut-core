@@ -28,6 +28,10 @@ public class Stats {
 	public void setGP(int gp) {
 		this.gp = gp;
 	}
+	
+	public void addGP(int garyPower) {
+		this.gp += garyPower;
+	}
 
 	public float getSpeed() {
 		return speed;

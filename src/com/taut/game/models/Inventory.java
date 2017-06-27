@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.taut.game.models.Item.ItemType;
 import com.taut.game.models.items.Armor;
 import com.taut.game.models.items.ArmorGenerator;
 import com.taut.game.models.items.Consumable;
@@ -51,12 +52,6 @@ public class Inventory {
 		});
 	}
 	
-	public enum ItemType {
-		WEAPON,
-		ARMOR,
-		CONSUMABLE
-	}
-	
 	public void giveItem(int id, ItemType itemType) {
 		int currentAmount;
 		
@@ -73,15 +68,16 @@ public class Inventory {
 	}
 	
 	public boolean hasItem(int id, ItemType itemType) {
-		if (itemType.equals(ItemType.WEAPON)) {
-			return weaponAmounts.get(id) > 0;
-		} else if (itemType.equals(ItemType.ARMOR)) {
-			return armorAmounts.get(id) > 0;
-		} else if (itemType.equals(ItemType.CONSUMABLE)) {
-			return consumableAmounts.get(id) > 0;
+		switch (itemType) {
+			case ARMOR:
+				return armorAmounts.get(id) > 0;
+			case CONSUMABLE:
+				return consumableAmounts.get(id) > 0;
+			case WEAPON:
+				return weaponAmounts.get(id) > 0;
+			default:
+				return false;
 		}
-		
-		return false;
 	}
 	
 	public void removeItem(int id, ItemType itemType) {

@@ -10,10 +10,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 import com.taut.game.GlobalData;
+import com.taut.game.models.Inventory;
 import com.taut.game.models.NPC;
-import com.taut.game.models.Quest;
 import com.taut.game.models.actions.FlashRenderer;
 import com.taut.game.models.actions.FlashRenderer.Flash;
+import com.taut.game.models.quest.Quest;
 import com.taut.game.objects.SpriteMovement.Direction;
 import com.taut.game.objects.SpriteMovement.DirectionData;
 
@@ -24,13 +25,15 @@ public class Player implements InputProcessor {
 	private boolean isUsingInput;
 	private static Player instance;
 	public SpriteMovement movement;
-	public Stats stats = new Stats();
-	public List<Quest> quests = new ArrayList<>();
-	public NPC interactableNPC = new NPC();
+	private Stats stats = new Stats();
+	private List<Quest> quests = new ArrayList<>();
+	private NPC interactableNPC = new NPC();
 	public boolean closeToEnemy = false;
 	public boolean canInteract = false;
 	public boolean isInteracting = false;
-	public List<String> completedQuests = new ArrayList<>();
+	private List<String> completedQuests = new ArrayList<>();
+	private List<String> achievementFlags = new ArrayList<>();
+	private Inventory inventory = new Inventory();
 	
 	// for low HP and other buffs
 	FlashRenderer flashRenderer;
@@ -93,12 +96,23 @@ public class Player implements InputProcessor {
 			System.out.println("I am interacting. Now, to flesh out the quest UI!");
 			
 			// TODO: ideally, we'll display all the info for each quest in a UI and have buttons to accept quest
-			quests = this.interactableNPC.getQuestList();
+			quests = this.interactableNPC.getQuests();
 		}
 		
 		if (closeToEnemy) {
 			// TODO: flesh out enemy system
 		}
+	}
+	
+	public void updateQuests() {
+		quests.stream()
+	    .filter(quest -> quest.isStarted() && !quest.isDone())
+	    // TODO: make complete conditions not just be strings
+		.filter(quest -> quest.getCompleteActions().getCompleteConditions().equals(this.getAchievementFlags()))
+		.forEach(quest -> {
+	        quest.getCompleteActions().getCombinedActionsList().forEach(action -> action.activate(new Player()));
+	        quest.setDone(true);
+		});
 	}
 	
 	public void updateStats(float delta) {
@@ -268,12 +282,67 @@ public class Player implements InputProcessor {
 		return false;
 	}
 
+	public void canInteract(boolean canInteract) {
+		this.canInteract = canInteract;
+	}
+
+	public Stats getStats() {
+		return stats;
+	}
+
+	public void setStats(Stats stats) {
+		this.stats = stats;
+	}
+
+	public List<Quest> getQuests() {
+		return quests;
+	}
+
+	public void addToQuests(Quest quest) {
+		this.quests.add(quest);
+	}
+
+	public boolean isCloseToEnemy() {
+		return closeToEnemy;
+	}
+
+	public void setCloseToEnemy(boolean closeToEnemy) {
+		this.closeToEnemy = closeToEnemy;
+	}
+
+	public boolean isInteracting() {
+		return isInteracting;
+	}
+
+	public void setInteracting(boolean isInteracting) {
+		this.isInteracting = isInteracting;
+	}
+
+	public List<String> getCompletedQuests() {
+		return completedQuests;
+	}
+
+	public void addToCompletedQuests(String completedQuest) {
+		this.completedQuests.add(completedQuest);
+	}
+
+	public List<String> getAchievementFlags() {
+		return achievementFlags;
+	}
+
+	public void addToAchievementFlags(String achievementFlag) {
+		this.achievementFlags.add(achievementFlag);
+	}
+
+	public NPC getInteractableNPC() {
+		return interactableNPC;
+	}
+	
 	public void setInteractableNPC(NPC closestNPC) {
 		this.interactableNPC = closestNPC;
 	}
 
-	public void canInteract(boolean canInteract) {
-		this.canInteract = canInteract;
+	public Inventory getInventory() {
+		return inventory;
 	}
-	
 }

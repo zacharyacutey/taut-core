@@ -1,4 +1,4 @@
-package com.taut.game.models;
+package com.taut.game.models.quest;
 
 import com.taut.game.objects.Player;
 
@@ -9,6 +9,6 @@ import com.taut.game.objects.Player;
  * condition
  */
 
-public interface QuestCondition {
-	public void isSatisfied(Player player);
+public interface QuestConditionFunction {
+	public boolean isSatisfied(Player player);
 }
