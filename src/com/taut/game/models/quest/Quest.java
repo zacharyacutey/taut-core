@@ -22,6 +22,12 @@ public class Quest {
     private boolean done = false;
     private boolean started = false;
     
+    public void createConditionFunctions() {
+    	beginConditions.fillCombinedActionsList();
+    	completeConditions.fillCombinedActionsList();
+    	completeActions.fillCombinedActionsList();
+    }
+    
 	public String getQuestName() {
 		return questName;
 	}

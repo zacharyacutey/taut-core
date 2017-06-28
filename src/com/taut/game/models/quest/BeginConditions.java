@@ -18,7 +18,6 @@ public class BeginConditions  {
 	private Item item;
 	private List<QuestConditionFunction> questConditionFunctions = new ArrayList<>();
 	
-	// I realize player probably shouldn't be imported here, so if you want to refactor this, you can while I'm gone
 	// must be called after createItem()
 	public void fillCombinedActionsList() {
 		// check for player flags

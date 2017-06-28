@@ -34,6 +34,12 @@ public class CompleteConditions {
 		// TODO: implement a system to determine what the player has done since getting a quest including talkedTo and enemiesDefeated
 	}
 
+	public ArrayList<QuestConditionFunction> getCombinedActionsList() {
+		return combinedActionsList;
+	}
+	public void setCombinedActionsList(ArrayList<QuestConditionFunction> combinedActionsList) {
+		this.combinedActionsList = combinedActionsList;
+	}
 	private void addToCombinedActionsList(QuestConditionFunction condition) {
 		this.combinedActionsList.add(condition);
 	}
