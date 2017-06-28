@@ -38,9 +38,11 @@ public class CompleteActions {
 		});
 		
 		// add item with certain ID to player inventory
-		this.addToCombinedActionsList((player) -> {
-			player.getInventory().giveItem(item.getID(), item.getItemType());
-		});
+		if (item != null) {
+			this.addToCombinedActionsList((player) -> {
+				player.getInventory().giveItem(item.getID(), item.getItemType());
+			});
+		}
 	}
 	
 	public List<CompleteActionFunction> getCombinedActionsList() {

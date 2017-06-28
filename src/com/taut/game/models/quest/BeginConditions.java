@@ -32,9 +32,11 @@ public class BeginConditions  {
 		});
 		
 		// check if item with certain ID is in inventory
-		this.addToQuestConditionFunctions((player) -> {
-			return player.getInventory().hasItem(item.getID(), item.getItemType());
-		});
+		if (item != null) {
+			this.addToQuestConditionFunctions((player) -> {
+				return player.getInventory().hasItem(item.getID(), item.getItemType());
+			});
+		}
 		
 		System.out.println(item);
 	}

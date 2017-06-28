@@ -35,7 +35,6 @@ public abstract class Item {
 		WEAPON,
 		ARMOR,
 		CONSUMABLE,
-		INTERACTIONITEM,
-		NONE
+		INTERACTIONITEM
 	}
 }

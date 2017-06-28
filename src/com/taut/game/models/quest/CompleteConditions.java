@@ -27,9 +27,11 @@ public class CompleteConditions {
 		});
 		
 		// check if item with certain ID is in inventory
-		this.addToCombinedActionsList((player) -> {
-			return player.getInventory().hasItem(item.getID(), item.getItemType());
-		});
+		if (item != null) {
+			this.addToCombinedActionsList((player) -> {
+				return player.getInventory().hasItem(item.getID(), item.getItemType());
+			});
+		}
 		
 		// TODO: implement a system to determine what the player has done since getting a quest including talkedTo and enemiesDefeated
 	}
