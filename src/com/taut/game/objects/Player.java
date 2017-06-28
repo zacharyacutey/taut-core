@@ -96,7 +96,9 @@ public class Player implements InputProcessor {
 			System.out.println("I am interacting. Now, to flesh out the quest UI!");
 			
 			// TODO: ideally, we'll display all the info for each quest in a UI and have buttons to accept quest
-			quests = this.interactableNPC.getQuests();
+			this.interactableNPC.getQuests().forEach(quest -> {
+				quests.add(quest);
+			});
 			
 			// just to make sure it works
 			quests.forEach(quest -> System.out.println(quest.getQuestName()));
