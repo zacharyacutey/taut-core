@@ -11,6 +11,8 @@ import com.taut.game.models.Item;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Armor extends Item {
+	private final ItemType itemType = ItemType.ARMOR;
+	
 	public int id;
 	public String imagePath;
 	
@@ -19,10 +21,8 @@ public class Armor extends Item {
 	public enum BodyArea {HEAD, SHOULDERS, KNEES, TOES}
 	
 	@JsonCreator
-    public Armor(@JsonProperty("id")int id, @JsonProperty("itemType")ItemType itemType) {
-        super(id, itemType);
-        this.setID(id);
-        this.setItemType(itemType);
+    public Armor(@JsonProperty("id")int id) {
+        super(id);
     }
 	
 	public int getDefense() {
@@ -53,4 +53,8 @@ public class Armor extends Item {
 		this.imagePath = imagePath;
 	}
 
+	@Override
+	public ItemType getItemType() {
+		return itemType;
+	}
 }

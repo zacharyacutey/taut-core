@@ -13,16 +13,16 @@ import com.taut.game.models.Item;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Weapon extends Item {
+	private final ItemType itemType = ItemType.WEAPON;
+	
 	int id;
 	int damageMin;
 	int damageMax;
 	String imagePath;
 	
 	@JsonCreator
-    public Weapon(@JsonProperty("id")int id, @JsonProperty("itemType")ItemType itemType) {
-        super(id, itemType);
-        this.setID(id);
-        this.setItemType(itemType);
+    public Weapon(@JsonProperty("id")int id) {
+        super(id);
     }
 	
     public Texture getTexture() {
@@ -63,5 +63,10 @@ public class Weapon extends Item {
 	@Override
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
+	}
+
+	@Override
+	public ItemType getItemType() {
+		return itemType;
 	}
 }

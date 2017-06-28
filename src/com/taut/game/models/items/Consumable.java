@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.taut.game.models.Item;
-import com.taut.game.models.Item.ItemType;
 import com.taut.game.models.items.consumables.Buff;
 
 /** 
@@ -16,6 +15,8 @@ import com.taut.game.models.items.consumables.Buff;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Consumable extends Item {
+	private final ItemType itemType = ItemType.CONSUMABLE;
+	
 	public int id;
 	public String imagePath;
 	
@@ -32,10 +33,8 @@ public class Consumable extends Item {
 	public enum BuffTypes {HEALING, DEFENSE, SPEED, ATTACK} 
 	
 	@JsonCreator
-    public Consumable(@JsonProperty("id")int id, @JsonProperty("itemType")ItemType itemType) {
-        super(id, itemType);
-        this.setID(id);
-        this.setItemType(itemType);
+    public Consumable(@JsonProperty("id")int id) {
+        super(id);
     }
 
 	public int getHpToRestore() {
@@ -72,6 +71,11 @@ public class Consumable extends Item {
 	@Override
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
+	}
+
+	@Override
+	public ItemType getItemType() {
+		return itemType;
 	}
 
 }

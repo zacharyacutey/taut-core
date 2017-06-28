@@ -5,12 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.taut.game.models.Item;
 
 public class InteractionItem extends Item {
+	private final ItemType itemType = ItemType.INTERACTIONITEM;
 
 	@JsonCreator
-    public InteractionItem(@JsonProperty("id")int id, @JsonProperty("itemType")ItemType itemType) {
-        super(id, itemType);
-        this.setID(id);
-        this.setItemType(itemType);
+    public InteractionItem(@JsonProperty("id")int id) {
+        super(id);
     }
 	
 	@Override
@@ -35,6 +34,11 @@ public class InteractionItem extends Item {
 	public void setImagePath(String imagePath) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public ItemType getItemType() {
+		return itemType;
 	}
 
 }

@@ -18,7 +18,6 @@ public class BeginConditions  {
 	private Item item;
 	private List<QuestConditionFunction> questConditionFunctions = new ArrayList<>();
 	
-	// must be called after createItem()
 	public void fillCombinedActionsList() {
 		// check for player flags
 		specialFlags.forEach(condition -> {
@@ -36,6 +35,8 @@ public class BeginConditions  {
 		this.addToQuestConditionFunctions((player) -> {
 			return player.getInventory().hasItem(item.getID(), item.getItemType());
 		});
+		
+		System.out.println(item);
 	}
 	
 	public List<QuestConditionFunction> getQuestConditionFunctions() {

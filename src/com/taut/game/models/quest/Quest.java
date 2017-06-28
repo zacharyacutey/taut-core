@@ -26,6 +26,7 @@ public class Quest {
     private boolean done = false;
     private boolean started = false;
     
+    // TODO: implement player action system
     List<PlayerAction> playerActionsSinceQuestStart = new ArrayList<>();
     
     public void createConditionFunctions() {
