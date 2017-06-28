@@ -2,7 +2,9 @@ package com.taut.game.models.items;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.taut.game.models.Item;
 
 /** 
@@ -15,6 +17,13 @@ public class Weapon extends Item {
 	int damageMin;
 	int damageMax;
 	String imagePath;
+	
+	@JsonCreator
+    public Weapon(@JsonProperty("id")int id, @JsonProperty("itemType")ItemType itemType) {
+        super(id, itemType);
+        this.setID(id);
+        this.setItemType(itemType);
+    }
 	
     public Texture getTexture() {
     	return new Texture(Gdx.files.internal(imagePath));

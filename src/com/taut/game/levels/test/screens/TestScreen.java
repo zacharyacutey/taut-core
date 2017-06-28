@@ -73,8 +73,11 @@ public class TestScreen extends ScreenAdapter {
 	public void renderPlayer(float delta)
 	{
 		player.updateMovement(delta, map, camera); // update & handle inputs for player
+		
+		// TODO: move these if there's a place that would make more sense (right now, it's updating these every frame)
 		player.updateStats(delta);
 		player.updateInteractions();
+		player.updateQuests();
 		
 		currentSprite = player.playerSprite.getSpriteKeyFrame();
 		currentSprite.setScaled(camera);

@@ -3,8 +3,11 @@ package com.taut.game.models.items;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.taut.game.models.Item;
+import com.taut.game.models.Item.ItemType;
 import com.taut.game.models.items.consumables.Buff;
 
 /** 
@@ -25,10 +28,15 @@ public class Consumable extends Item {
 	// will be populated after JSON is read
 	public List<Buff> buffs = new ArrayList<>();
 	
-	
-	
 	// we'll continually add to this list
 	public enum BuffTypes {HEALING, DEFENSE, SPEED, ATTACK} 
+	
+	@JsonCreator
+    public Consumable(@JsonProperty("id")int id, @JsonProperty("itemType")ItemType itemType) {
+        super(id, itemType);
+        this.setID(id);
+        this.setItemType(itemType);
+    }
 
 	public int getHpToRestore() {
 		return hpToRestore;

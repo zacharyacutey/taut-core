@@ -1,6 +1,8 @@
 package com.taut.game.models.items;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.taut.game.models.Item;
 
 /** 
@@ -15,6 +17,13 @@ public class Armor extends Item {
 	// armor specific stuff
 	public int defense;
 	public enum BodyArea {HEAD, SHOULDERS, KNEES, TOES}
+	
+	@JsonCreator
+    public Armor(@JsonProperty("id")int id, @JsonProperty("itemType")ItemType itemType) {
+        super(id, itemType);
+        this.setID(id);
+        this.setItemType(itemType);
+    }
 	
 	public int getDefense() {
 		return defense;

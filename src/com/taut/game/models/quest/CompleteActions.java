@@ -16,10 +16,6 @@ public class CompleteActions {
 	// to see stats/inventory/etc.
 	Player player;
 	
-	// flags
-	// TODO: make complete conditions not just be strings
-	private ArrayList<String> completeConditions;
-	
 	// we can expand how this works later
 	private String completeDialogue;
 	
@@ -27,19 +23,10 @@ public class CompleteActions {
 	private int garyPower;
 	private Item item;
 	
-	private String preventFutureReward;
-	
 	private List<CompleteActionFunction> combinedActionsList = new ArrayList<>();
 	
 	// I realize player probably shouldn't be imported here, so if you want to refactor this, you can while I'm gone
-	public void fillCombinedActionsList() {
-		// add player achievement flags
-		completeConditions.forEach(condition -> {
-			this.addToCombinedActionsList((player) -> {
-				player.addToAchievementFlags(condition);
-			});
-		});
-		
+	public void fillCombinedActionsList() {		
 		// add action for NPC to say the dialogue
 		this.addToCombinedActionsList((player) -> {
 			player.getInteractableNPC().say(completeDialogue);
@@ -62,12 +49,6 @@ public class CompleteActions {
 	public void addToCombinedActionsList(CompleteActionFunction action) {
 		this.combinedActionsList.add(action);
 	}
-	public ArrayList<String> getCompleteConditions() {
-		return completeConditions;
-	}
-	public void setCompleteConditions(ArrayList<String> completeConditions) {
-		this.completeConditions = completeConditions;
-	}
 	public String getCompleteDialogue() {
 		return completeDialogue;
 	}
@@ -85,13 +66,5 @@ public class CompleteActions {
 	}
 	public void setGaryPower(int garyPower) {
 		this.garyPower = garyPower;
-	}
-
-	public String getPreventFutureReward() {
-		return preventFutureReward;
-	}
-
-	public void setPreventFutureReward(String preventFutureReward) {
-		this.preventFutureReward = preventFutureReward;
 	}
 }

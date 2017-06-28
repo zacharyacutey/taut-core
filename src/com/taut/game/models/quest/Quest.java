@@ -1,8 +1,5 @@
 package com.taut.game.models.quest;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -18,11 +15,12 @@ public class Quest {
     private String questDialogue;
     
     // converting JSON object to our custom classes
-    private BeginConditions questBeginConditions;
+    private BeginConditions beginConditions;
+    private CompleteConditions completeConditions;
     private CompleteActions completeActions;
     
     private boolean done = false;
-    private boolean started;
+    private boolean started = false;
     
 	public String getQuestName() {
 		return questName;
@@ -30,17 +28,23 @@ public class Quest {
 	public void setQuestName(String questName) {
 		this.questName = questName;
 	}
-	public BeginConditions getQuestConditions() {
-		return questBeginConditions;
+	public BeginConditions getBeginConditions() {
+		return beginConditions;
 	}
-	public void setQuestConditions(BeginConditions questConditions) {
-		this.questBeginConditions = questConditions;
+	public void setBeginConditions(BeginConditions beginConditions) {
+		this.beginConditions = beginConditions;
 	}
 	public CompleteActions getCompleteActions() {
 		return completeActions;
 	}
 	public void setCompleteActions(CompleteActions completeActions) {
 		this.completeActions = completeActions;
+	}
+	public CompleteConditions getCompleteConditions() {
+		return completeConditions;
+	}
+	public void setCompleteConditions(CompleteConditions completeConditions) {
+		this.completeConditions = completeConditions;
 	}
 	public String getQuestDialogue() {
 		return questDialogue;

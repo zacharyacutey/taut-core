@@ -12,13 +12,10 @@ import com.taut.game.models.Item;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BeginConditions  {
-	// TODO: make complete conditions not just be strings
+	// TODO: potentially make flags not just be strings
 	private ArrayList<String> specialFlags;
 	private int garyPower;
-	
-	// stuff just for the json parser
 	private Item item;
-	
 	private List<QuestConditionFunction> questConditionFunctions = new ArrayList<>();
 	
 	// I realize player probably shouldn't be imported here, so if you want to refactor this, you can while I'm gone
@@ -36,7 +33,7 @@ public class BeginConditions  {
 			return player.getStats().getGP() >= this.garyPower;
 		});
 		
-		// add item with certain ID to player inventory
+		// check if item with certain ID is in inventory
 		this.addToQuestConditionFunctions((player) -> {
 			return player.getInventory().hasItem(item.getID(), item.getItemType());
 		});
@@ -54,18 +51,19 @@ public class BeginConditions  {
 	public void setSpecialFlags(ArrayList<String> specialFlags) {
 		this.specialFlags = specialFlags;
 	}
-	public int getItemID() {
-		return item.getID();
-	}
-	public void setItemID(int itemID) {
-		this.item.setID(itemID);
-	}
 	public int getGaryPower() {
 		return garyPower;
 	}
 	public void setGaryPower(int garyPower) {
 		this.garyPower = garyPower;
 	}
+	public Item getItem() {
+		return item;
+	}
+	public void setItem(Item item) {
+		this.item = item;
+	}
+	
 
 //	@Override
 //	public boolean isSatisfied(Player player) {

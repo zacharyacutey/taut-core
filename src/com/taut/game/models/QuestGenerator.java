@@ -16,6 +16,7 @@ public class QuestGenerator implements FolderApplication {
 	    
 		try {
 			quest = mapper.readValue(json, Quest.class);
+			//quest.getCompleteConditions().convertItem(quest.getCompleteConditions().getItem().get("ID"), quest.getCompleteConditions().getItem().get("type"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -105,12 +105,13 @@ public class Player implements InputProcessor {
 	}
 	
 	public void updateQuests() {
-		quests.stream()
+		// when player is finishing a quest
+		instance.getQuests().stream()
 	    .filter(quest -> quest.isStarted() && !quest.isDone())
 	    // TODO: make complete conditions not just be strings
-		.filter(quest -> quest.getCompleteActions().getCompleteConditions().equals(this.getAchievementFlags()))
+		.filter(quest -> instance.getAchievementFlags().contains(quest.getCompleteConditions()))
 		.forEach(quest -> {
-	        quest.getCompleteActions().getCombinedActionsList().forEach(action -> action.activate(new Player()));
+	        quest.getCompleteActions().getCombinedActionsList().forEach(action -> action.activate(instance));
 	        quest.setDone(true);
 		});
 	}
