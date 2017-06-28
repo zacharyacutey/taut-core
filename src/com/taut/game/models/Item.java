@@ -33,7 +33,8 @@ public abstract class Item {
 	public enum ItemType {
 		WEAPON,
 		ARMOR,
-		CONSUMABLE
+		CONSUMABLE,
+		INTERACTIONITEM
 	}
 
 	public void setItemType(ItemType itemType) {

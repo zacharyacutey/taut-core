@@ -10,6 +10,8 @@ import com.taut.game.models.items.Armor;
 import com.taut.game.models.items.ArmorGenerator;
 import com.taut.game.models.items.Consumable;
 import com.taut.game.models.items.ConsumableGenerator;
+import com.taut.game.models.items.InteractionItem;
+import com.taut.game.models.items.InteractionItemGenerator;
 import com.taut.game.models.items.Weapon;
 import com.taut.game.models.items.WeaponGenerator;
 import com.taut.game.objects.FolderContents;
@@ -27,15 +29,21 @@ public class Inventory {
 	static ArmorGenerator armorGenerator = new ArmorGenerator();
 	static FolderContents armorFolderContents = new FolderContents("armor");
 	
+	static ArrayList<InteractionItem> interactionItems = new ArrayList<>();
+	static InteractionItemGenerator interactionItemGenerator = new InteractionItemGenerator();
+	static FolderContents interactionItemFolderContents = new FolderContents("interactionItems");
+	
 	// id, amount
 	public static Map<Integer, Integer> weaponAmounts = new HashMap<>();
 	public static Map<Integer, Integer> armorAmounts = new HashMap<>();
 	public static Map<Integer, Integer> consumableAmounts = new HashMap<>();
+	public static Map<Integer, Integer> interactionItemAmounts = new HashMap<>();
 	
 	public Inventory() {
 		weaponFolderContents.generateAndStore(weaponGenerator, weapons);
 		consumableFolderContents.generateAndStore(consumableGenerator, consumables);
 		armorFolderContents.generateAndStore(armorGenerator, armor);
+		interactionItemFolderContents.generateAndStore(interactionItemGenerator, interactionItems);
 	}
 	// fill id lookup table with all initial values at 0
 	public static void fillItemTables(List<Weapon> weapons, List<Armor> armors, List<Consumable> consumables) {
@@ -50,20 +58,32 @@ public class Inventory {
 		consumables.forEach(consumable -> {
 			consumableAmounts.put(consumable.getID(), 0);
 		});
+		
+		interactionItems.forEach(interactionItem -> {
+			interactionItemAmounts.put(interactionItem.getID(), 0);
+		});
 	}
 	
 	public void giveItem(int id, ItemType itemType) {
 		int currentAmount;
 		
-		if (itemType.equals(ItemType.WEAPON)) {
-			currentAmount = weaponAmounts.get(id);
-			weaponAmounts.put(id, currentAmount+1);
-		} else if (itemType.equals(ItemType.ARMOR)) {
+		switch (itemType) {
+		case ARMOR:
 			currentAmount = armorAmounts.get(id);
 			armorAmounts.put(id, currentAmount+1);
-		} else if (itemType.equals(ItemType.CONSUMABLE)) {
+			break;
+		case CONSUMABLE:
 			currentAmount = consumableAmounts.get(id);
 			consumableAmounts.put(id, currentAmount+1);
+			break;
+		case WEAPON:
+			currentAmount = weaponAmounts.get(id);
+			weaponAmounts.put(id, currentAmount+1);
+			break;
+		case INTERACTIONITEM:
+			currentAmount = interactionItemAmounts.get(id);
+			interactionItemAmounts.put(id, currentAmount+1);
+			break;
 		}
 	}
 	

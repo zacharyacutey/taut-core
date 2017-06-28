@@ -1,6 +1,10 @@
 package com.taut.game.models.quest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.taut.game.models.actions.PlayerAction;
 
 /**
  * @author 19smitgr
@@ -21,6 +25,8 @@ public class Quest {
     
     private boolean done = false;
     private boolean started = false;
+    
+    List<PlayerAction> playerActionsSinceQuestStart = new ArrayList<>();
     
     public void createConditionFunctions() {
     	beginConditions.fillCombinedActionsList();
