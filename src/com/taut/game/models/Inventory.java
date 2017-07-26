@@ -47,21 +47,21 @@ public class Inventory {
 	}
 	// fill id lookup table with all initial values at 0
 	public static void fillItemTables(List<Weapon> weapons, List<Armor> armors, List<Consumable> consumables) {
-		weapons.forEach(weapon -> {
-			weaponAmounts.put(weapon.getID(), 0);
-		});
+		for(int i = 0; i < weapons.size(); i++) {
+			weaponAmounts.put(weapons.get(i).getID(), 0);
+		}
 		
-		armors.forEach(armor -> {
-			armorAmounts.put(armor.getID(), 0);
-		});
+		for(int i = 0; i < armors.size(); i++) {
+			armorAmounts.put(armors.get(i).getID(), 0);
+		}
 		
-		consumables.forEach(consumable -> {
-			consumableAmounts.put(consumable.getID(), 0);
-		});
+		for(int i = 0; i < consumables.size(); i++) {
+			consumableAmounts.put(consumables.get(i).getID(), 0);
+		}
 		
-		interactionItems.forEach(interactionItem -> {
-			interactionItemAmounts.put(interactionItem.getID(), 0);
-		});
+		for(int i = 0; i < interactionItems.size(); i++) {
+			interactionItemAmounts.put(interactionItems.get(i).getID(), 0);
+		}
 	}
 	
 	public void giveItem(int id, ItemType itemType) {
