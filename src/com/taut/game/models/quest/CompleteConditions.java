@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.taut.game.models.Item;
+import com.taut.game.objects.Player;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompleteConditions {
@@ -21,8 +22,9 @@ public class CompleteConditions {
 	public void fillCombinedActionsList() {
 		// add player achievement flags
 		for(int i = 0; i < specialFlags.size(); i++) {
+			final int j = i;
 			this.addToCombinedActionsList(new QuestConditionFunction() { public boolean isSatisfied(Player player) {
-				return player.getAchievementFlags().contains(specialFlags.get(i));
+				return player.getAchievementFlags().contains(specialFlags.get(j));
 			}});
 		}
 		
