@@ -3,9 +3,10 @@ package com.taut.game.objects;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-
+import java.util.Iterator;
 
 /**
  * @author Garrett
@@ -36,8 +37,8 @@ public class FolderContents {
 			Path path = null;
 			while(it.hasNext()) {
 				path = it.next();
-				if(Files.isRegularFile(p)) {
-					mutatedFileStorage.add((T) application.readFromFile(p));
+				if(isRegularFile(path)) {
+					mutatedFileStorage.add((T) application.readFromFile(path));
 				}
 			}
 		} catch (IOException e) {
