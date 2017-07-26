@@ -23,8 +23,9 @@ public class BeginConditions  {
 	public void fillCombinedActionsList() {
 		// check for player flags
 		for(int i = 0; i < specialFlags.size(); i++) {
+			final int j = i;
 			this.addToQuestConditionFunctions(new QuestConditionFunction() {public boolean isSatisfied(Player player) {
-				return player.getAcheivementFlags().contains(specialFlags.get(i));
+				return player.getAchievementFlags().contains(specialFlags.get(j));
 			}});
 		}
 		
