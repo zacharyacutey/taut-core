@@ -28,20 +28,20 @@ public class CompleteActions {
 	// I realize player probably shouldn't be imported here, so if you want to refactor this, you can while I'm gone
 	public void fillCombinedActionsList() {		
 		// add action for NPC to say the dialogue
-		this.addToCombinedActionsList((player) -> {
+		this.addToCombinedActionsList(new CompleteActionFunction() {public void activate(Player player){
 			player.getInteractableNPC().say(completeDialogue);
-		}); 
+		}}); 
 		
 		// add action for player to get more GP
-		this.addToCombinedActionsList((player) -> {
+		this.addToCombinedActionsList(new CompleteActionFunction() {public void activate(Player player){
 			player.getStats().addGP(garyPower);
-		});
+		}});
 		
 		// add item with certain ID to player inventory
 		if (item != null) {
-			this.addToCombinedActionsList((player) -> {
+			this.addToCombinedActionsList(new CompleteActionFunction() {public void activate(Player player){
 				player.getInventory().giveItem(item.getID(), item.getItemType());
-			});
+			}});
 		}
 	}
 	
