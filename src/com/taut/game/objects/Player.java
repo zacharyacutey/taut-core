@@ -96,12 +96,14 @@ public class Player implements InputProcessor {
 			System.out.println("I am interacting. Now, to flesh out the quest UI!");
 			
 			// TODO: ideally, we'll display all the info for each quest in a UI and have buttons to accept quest
-			this.interactableNPC.getQuests().forEach(quest -> {
-				quests.add(quest);
-			});
+			for(int i = 0; i < qs.size(); i++) {
+				quests.add(qs.get(i));
+			}
 			
 			// just to make sure it works
-			quests.forEach(quest -> System.out.println(quest.getQuestName()));
+			for(int i = 0; i < quests.size(); i++) {
+				System.out.println(quests.get(i).getQuestName());
+			}
 		}
 		
 		if (closeToEnemy) {
@@ -111,14 +113,33 @@ public class Player implements InputProcessor {
 	
 	public void updateQuests() {
 		// when player is finishing a quest
-		instance.getQuests().stream()
-	    .filter(quest -> quest.isStarted() && !quest.isDone())
+//		instance.getQuests().stream()
+//	    .filter(quest -> quest.isStarted() && !quest.isDone())
 	    // see if all the complete conditions are satisfied
-		.filter(quest -> quest.getCompleteConditions().getCombinedActionsList().stream().allMatch(condition -> condition.isSatisfied(instance)))
-		.forEach(quest -> {
-	        quest.getCompleteActions().getCombinedActionsList().forEach(action -> action.activate(instance));
-	        quest.setDone(true);
-		});
+//		.filter(quest -> quest.getCompleteConditions().getCombinedActionsList().stream().allMatch(condition -> condition.isSatisfied(instance)))
+//		.forEach(quest -> {
+//	        quest.getCompleteActions().getCombinedActionsList().forEach(action -> action.activate(instance));
+//	        quest.setDone(true);
+//		});
+
+		// Not going to delete that, just in case I screwed up this lambda hell.
+		ArrayList<Quest> qs = instance.getQuests();
+		for(int i = 0; i < qs.size(); i++) {
+			Quest quest = qs.get(i);
+			if(quest.isStarted() && !quest.isDone()) {
+				boolean temp = true;
+				ArrayList<QuestConditionFunction> cc = quest.getCompleteActions().getCombinedActionsList();
+				for(int j = 0; j < cc.size(); j++) {
+					temp = temp && cc.get(i).isSatisfied(player);
+				}
+				if(temp) {
+					for(int j = 0; j < cc.size(); j++) {
+						cc.get(j).activate(instance);
+					}
+					quest.setDone(true);
+				}
+			}
+		}
 	}
 	
 	public void updateStats(float delta) {
@@ -206,21 +227,17 @@ public class Player implements InputProcessor {
 	}
 	
 	public boolean keyUp(int keycode) {
-		
-		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
-		{
+		//I needed to fix this.
+		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A) {
 			Inputs.left.isPressed = false;
 			Inputs.left.timeSincePressed = 0.0;
-		}else if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D)
-		{
+		} else if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D) {
 			Inputs.right.isPressed = false;
 			Inputs.right.timeSincePressed = 0.0;
-		}else if(keycode == Input.Keys.UP || keycode == Input.Keys.W)
-		{
+		} else if(keycode == Input.Keys.UP || keycode == Input.Keys.W) {
 			Inputs.up.isPressed = false;
 			Inputs.up.timeSincePressed = 0.0;
-		}else if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S)
-		{
+		} else if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S) {
 			Inputs.down.isPressed = false;
 			Inputs.down.timeSincePressed = 0.0;
 		}
@@ -230,18 +247,14 @@ public class Player implements InputProcessor {
 
 	
 	public boolean keyDown(int keycode) {
-		
-		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A)
-		{
+		//And this
+		if(keycode == Input.Keys.LEFT || keycode == Input.Keys.A) {
 			Inputs.left.isPressed = true;
-		}else if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D)
-		{
+		} else if(keycode == Input.Keys.RIGHT || keycode == Input.Keys.D) {
 			Inputs.right.isPressed = true;
-		}else if(keycode == Input.Keys.UP || keycode == Input.Keys.W)
-		{
+		} else if(keycode == Input.Keys.UP || keycode == Input.Keys.W) {
 			Inputs.up.isPressed = true;
-		}else if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S)
-		{
+		} else if(keycode == Input.Keys.DOWN || keycode == Input.Keys.S) {
 			Inputs.down.isPressed = true;
 		}
 		
