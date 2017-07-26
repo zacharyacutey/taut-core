@@ -130,7 +130,7 @@ public class TestScreen extends ScreenAdapter {
 		// we're going to turn all the npcs into sprites and store them here
 		List<TautSprite> npcSprites = new ArrayList<>();
 		
-		npcs.stream()
+		/*npcs.stream() //WHY ON EARTH DO YOU NEED THIS MANY LAMBDAS IN AN IMPERATIVE PROGRAMMING LANGUAGE?!?!?!
 			// filter out NPCs beyond 5 units away
 			.filter(npc -> {
 				Vector3 npcCoords = npc.getCoordsInVector3();
@@ -159,9 +159,37 @@ public class TestScreen extends ScreenAdapter {
 				npcSprite.setScaled(camera);
 				
 				npcSprites.add(npcSprite);
-			});
+			});*/ //again, lambda. hell. not going to remove it in case I mess it up
+		for(int i = 0; i < npcs.size(); i++) {
+			NPC npc = npcs.get(i);
+			Vector3 npcCoords = npc.getCoordsInVector3();
+			Vector3 playerPosition = player.getPlayerWorldPosition();
+			npc.setDistanceToPlayer(Math.sqrt(Math.pow((playerPosition.x - npcCoords.x), 2) + Math.pow((playerPosition.y - npcCoords.y), 2)));
+			if(npc.getDistanceToPlayer() < camera.getWorldCircumscribedRadius()) {
+				Texture npcTexture = npc.getTexture();
+				npcCoords = npc.getCoordsInVector3();
+				TautAnimatedSprite npcSpriteWalkAnimation = new TautAnimatedSprite(GlobalData.getWalkSheetSpeed(), TautSprite.splitTexture(npcTexture, GlobalData.getWalkSheetWidth(), GlobalData.getWalkSheetHeight()), npcCoords);
+				npcSpriteWalkAnimation.update(delta,camera,map);
+				TautSprite npcSprite = npcSpriteWalkAnimation.getSpriteKeyFrame();
+				npcSprite.setScaled(camera);
+				npcSprites.add(npcSprite);
+			}
+		}
+			
 		
-		NPC closestNPC = npcs.stream().min((npc1, npc2) -> Double.compare(npc1.getDistanceToPlayer(), npc2.getDistanceToPlayer())).orElse(null);
+		//NPC closestNPC = npcs.stream().min((npc1, npc2) -> Double.compare(npc1.getDistanceToPlayer(), npc2.getDistanceToPlayer())).orElse(null);
+		//Left this here just in case I misunderstood `min`
+		NPC closestNPC = null;
+		int index = 0;
+		for(int i = 1; i < npcs.size(); i++) {
+			if(npcs.get(index).getDistanceToPlayer() > npcs.get(i).getDistanceToPlayer()) {
+				index = i;
+			}
+		}
+		if(npcs.size() != 0) {
+			closestNPC = npcs.get(index);
+		}
+		
 		if (closestNPC.getDistanceToPlayer() < 2) {
 			player.setInteractableNPC(closestNPC);
 			player.canInteract(true);
@@ -170,9 +198,9 @@ public class TestScreen extends ScreenAdapter {
 		}
 		
 		spriteBatch.begin();
-		npcSprites.forEach(npcSprite -> {
-			npcSprite.draw(spriteBatch);
-		});
+		for(int i = 0; i < npcSprites.size(); i++) {
+			npcSprites.get(i).draw(spriteBatch);
+		}		
 		spriteBatch.end();
 
 	}
