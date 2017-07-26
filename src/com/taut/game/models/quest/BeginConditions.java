@@ -20,22 +20,22 @@ public class BeginConditions  {
 	
 	public void fillCombinedActionsList() {
 		// check for player flags
-		specialFlags.forEach(condition -> {
-			this.addToQuestConditionFunctions((player) -> {
-				return player.getAchievementFlags().contains(condition);
-			});
-		});
+		for(int i = 0; i < specialFlags.size(); i++) {
+			this.addToQuestConditionFunctions(new QuestConditionFunction() {public boolean isSatisfied(Player player) {
+				return player.getAcheivementFlags().contains(specialFlags.get(i));
+			}});
+		}
 		
 		// add action for player to get more GP
-		this.addToQuestConditionFunctions((player) -> {
+		this.addToQuestConditionFunctions(new QuestConditionFunction() {public boolean isSatisfied(Player player) {
 			return player.getStats().getGP() >= this.garyPower;
-		});
+		}});
 		
 		// check if item with certain ID is in inventory
 		if (item != null) {
-			this.addToQuestConditionFunctions((player) -> {
+			this.addToQuestConditionFunctions(new QuestConditionFunction() {public boolean isSatisfied(Player player) {
 				return player.getInventory().hasItem(item.getID(), item.getItemType());
-			});
+			}});
 		}
 		
 		System.out.println(item);
