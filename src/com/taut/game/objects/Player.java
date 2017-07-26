@@ -16,6 +16,7 @@ import com.taut.game.models.actions.FlashRenderer;
 import com.taut.game.models.actions.FlashRenderer.Flash;
 import com.taut.game.models.quest.Quest;
 import com.taut.game.models.quest.QuestConditionFunction;
+import com.taut.game.models.quest.CompleteActionFunction;
 import com.taut.game.objects.SpriteMovement.Direction;
 import com.taut.game.objects.SpriteMovement.DirectionData;
 
@@ -130,9 +131,9 @@ public class Player implements InputProcessor {
 			Quest quest = qs.get(i);
 			if(quest.isStarted() && !quest.isDone()) {
 				boolean temp = true;
-				List<CompleteActionFunction> cc = quest.getCompleteActions().getCombinedActionsList();
+				List<CompleteActionFunction> cc = quest.getCompleteActions().getCombinedActionsList();			
 				for(int j = 0; j < cc.size(); j++) {
-					temp = temp && cc.get(i).isSatisfied(player);
+					temp = temp && quest.getCompleteConditions().getCombinedActionsList().get(i).isSatisfied(instance);
 				}
 				if(temp) {
 					for(int j = 0; j < cc.size(); j++) {
