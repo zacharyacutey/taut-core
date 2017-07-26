@@ -27,9 +27,10 @@ public class NPCGenerator implements FolderApplication {
 		try {
 			npc = mapper.readValue(json, NPC.class);
 			npc.setTexture();
-			npc.getQuests().forEach(quest -> {
-				quest.createConditionFunctions();
-			});
+			ArrayList<Quest> quests = npc.getQuests(); 
+			for(int i = 0; i < quests.size(); i++) {
+				quests.get(i).createConditionFunctions();
+			}
 
 			// array is used for json mapping, but arraylist is more convenient
 			npc.setQuests(npc.getQuests());
