@@ -31,7 +31,7 @@ public class BeginConditions  {
 		
 		// add action for player to get more GP
 		this.addToQuestConditionFunctions(new QuestConditionFunction() {public boolean isSatisfied(Player player) {
-			return player.getStats().getGP() >= this.garyPower;
+			return player.getStats().getGP() >= garyPower;
 		}});
 		
 		// check if item with certain ID is in inventory
