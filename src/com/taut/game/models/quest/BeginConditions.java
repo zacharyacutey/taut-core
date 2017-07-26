@@ -3,8 +3,10 @@ package com.taut.game.models.quest;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.taut.game.models.Item;
+import com.taut.game.objects.Player;
 
 /**
  * @author Garrett
