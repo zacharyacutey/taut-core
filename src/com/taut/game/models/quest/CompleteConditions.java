@@ -20,17 +20,17 @@ public class CompleteConditions {
 	
 	public void fillCombinedActionsList() {
 		// add player achievement flags
-		specialFlags.forEach(flag -> {
-			this.addToCombinedActionsList((player) -> {
-				return player.getAchievementFlags().contains(flag);
-			});
-		});
+		for(int i = 0; i < specialFlags.size(); i++) {
+			this.addToCombinedActionsList(new QuestConditionFunction() { public boolean isSatisfied(Player player) {
+				return player.getAchievementFlags().contains(specialFlags.get(i));
+			}});
+		}
 		
 		// check if item with certain ID is in inventory
 		if (item != null) {
-			this.addToCombinedActionsList((player) -> {
+			this.addToCombinedActionsList(new QuestConditionFunction() { public boolean isSatisfied(Player player) {
 				return player.getInventory().hasItem(item.getID(), item.getItemType());
-			});
+			}});
 		}
 		
 		// TODO: implement a system to determine what the player has done since getting a quest including talkedTo and enemiesDefeated
