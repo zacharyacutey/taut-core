@@ -124,7 +124,7 @@ public class Player implements InputProcessor {
 //		});
 
 		// Not going to delete that, just in case I screwed up this lambda hell.
-		ArrayList<Quest> qs = instance.getQuests();
+		List<Quest> qs = instance.getQuests();
 		for(int i = 0; i < qs.size(); i++) {
 			Quest quest = qs.get(i);
 			if(quest.isStarted() && !quest.isDone()) {
