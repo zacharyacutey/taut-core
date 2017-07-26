@@ -27,11 +27,19 @@ public class FolderContents {
 		
 		// read through all JSON files in the specified folder and store info in the mutatedFileStorage
 		try {
-			Files.walk(Paths.get(modifiedPathName))
-			 .filter(Files::isRegularFile)
-			 .forEach(path -> {
-				mutatedFileStorage.add((T) application.readFromFile(path));
-			 });
+			//Files.walk(Paths.get(modifiedPathName))
+			// .filter(Files::isRegularFile)
+			// .forEach(path -> {
+			//	mutatedFileStorage.add((T) application.readFromFile(path));
+			// });
+			Iterator<Path> it = Files.walkFileTree(Paths.get(modifiedPathName)).iterator();
+			Path path = null;
+			while(it.hasNext()) {
+				path = it.next();
+				if(Files.isRegularFile(p)) {
+					mutatedFileStorage.add((T) application.readFromFile(p));
+				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
