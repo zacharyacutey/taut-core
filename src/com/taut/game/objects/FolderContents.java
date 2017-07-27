@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.*;
 import java.util.List;
 import java.util.Iterator;
 
@@ -23,7 +25,7 @@ public class FolderContents {
 	 * @param application Applies FolderApplication to all files in folder
 	 * @param mutatedFileStorage Stores mutated file info in mutatedFileStorage
 	 */
-	public <T> void generateAndStore(FolderApplication application, List<T> mutatedFileStorage) {
+	public <T> void generateAndStore(final FolderApplication application, final List<T> mutatedFileStorage) {
 		String modifiedPathName = generateFolderPath();
 		
 		// read through all JSON files in the specified folder and store info in the mutatedFileStorage
@@ -33,14 +35,15 @@ public class FolderContents {
 			// .forEach(path -> {
 			//	mutatedFileStorage.add((T) application.readFromFile(path));
 			// });
-			Iterator<Path> it = Files.walkFileTree(Paths.get(modifiedPathName)).iterator();
-			Path path = null;
-			while(it.hasNext()) {
-				path = it.next();
-				if(Files.isRegularFile(path)) {
-					mutatedFileStorage.add((T) application.readFromFile(path));
+			Files.walkFileTree(Paths.get(modifiedPathName), new SimpleFileVisitor<Path>() {
+				@Override
+				public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+					if (attrs.isRegularFile()) {
+						mutatedFileStorage.add((T) application.readFromFile(path));
+					}
+					return FileVisitResult.CONTINUE;
 				}
-			}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
