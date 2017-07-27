@@ -37,7 +37,7 @@ public class FolderContents {
 			Path path = null;
 			while(it.hasNext()) {
 				path = it.next();
-				if(isRegularFile(path)) {
+				if(Files.isRegularFile(path)) {
 					mutatedFileStorage.add((T) application.readFromFile(path));
 				}
 			}
